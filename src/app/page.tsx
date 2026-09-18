@@ -1,69 +1,106 @@
-import Image from "next/image";
+import Link from 'next/link';
+import { prisma } from '@/lib/prisma';
+import { PackageCard } from '@/components/storefront/PackageCard';
+import { ProductCard } from '@/components/storefront/ProductCard';
 
-export default function Home() {
+export const revalidate = 0;
+
+export default async function HomePage() {
+  let categories: Awaited<ReturnType<typeof prisma.category.findMany>> = [];
+  let featuredPackages: Awaited<ReturnType<typeof prisma.package.findMany>> = [];
+  let featuredProducts: Awaited<ReturnType<typeof prisma.product.findMany>> = [];
+  let allProducts: Awaited<ReturnType<typeof prisma.product.findMany>> = [];
+  try {
+    [categories, featuredPackages, featuredProducts, allProducts] = await Promise.all([
+      prisma.category.findMany({ where: { isActive: true }, take: 8 }),
+      prisma.package.findMany({ where: { isActive: true }, take: 4, include: { items: { include: { product: true } } } }),
+      prisma.product.findMany({ where: { isActive: true, category: { isActive: true } }, take: 6, orderBy: { id: 'desc' }, include: { category: true } }),
+      prisma.product.findMany({ where: { isActive: true, category: { isActive: true } } }),
+    ]);
+  } catch (error) {
+    console.warn('Storefront catalog is temporarily unavailable:', error instanceof Error ? error.message : error);
+  }
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
+    <div className="pb-16">
+      <section className="border-b border-amber-500/20 bg-[radial-gradient(circle_at_top_right,_rgba(245,158,11,0.18),_transparent_42%),linear-gradient(135deg,#111827,#020617)] px-4 pb-12 pt-12 sm:px-6 sm:pb-16 sm:pt-16 lg:px-8">
+        <div className="mx-auto max-w-5xl">
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-amber-400">Direct from Sivakasi</p>
+          <h1 className="mt-4 max-w-2xl text-4xl font-black leading-tight text-white sm:text-6xl">
+            Your celebration starts here.
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="mt-4 max-w-xl text-sm leading-6 text-slate-300 sm:text-base">
+            Shop individual crackers or choose a ready-made family package. Place your order in minutes and our team will call to confirm it.
           </p>
+
+          <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <Link href="/packages" className="rounded-xl bg-amber-500 px-5 py-4 text-center text-sm font-black text-slate-950 shadow-lg shadow-amber-500/20 transition hover:bg-amber-400">
+              Shop packages <span aria-hidden="true">→</span>
+            </Link>
+            <Link href="/products" className="rounded-xl border border-slate-600 bg-slate-900/70 px-5 py-4 text-center text-sm font-bold text-white transition hover:border-amber-400 hover:text-amber-300">
+              Browse all crackers <span aria-hidden="true">→</span>
+            </Link>
+            <Link href="/track" className="rounded-xl border border-slate-700 px-5 py-4 text-center text-sm font-bold text-slate-300 transition hover:border-amber-400 hover:text-amber-300">
+              Track an order <span aria-hidden="true">→</span>
+            </Link>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </section>
+
+      {categories.length > 0 && (
+        <section className="mx-auto max-w-5xl px-4 pt-10 sm:px-6 lg:px-8">
+          <div className="flex items-end justify-between gap-4">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-widest text-amber-400">Start with a category</p>
+              <h2 className="mt-1 text-2xl font-black text-white">What are you shopping for?</h2>
+            </div>
+            <Link href="/products" className="hidden text-xs font-bold text-amber-400 sm:block">View catalog →</Link>
+          </div>
+          <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            {categories.slice(0, 8).map((cat) => (
+              <Link key={cat.id} href={`/products?category=${cat.slug}`} className="rounded-xl border border-slate-800 bg-slate-900/70 p-4 transition hover:border-amber-500/50">
+                <span className="text-xl text-amber-400" aria-hidden="true">✦</span>
+                <h3 className="mt-3 text-sm font-bold text-white">{cat.name}</h3>
+                <p className="mt-1 line-clamp-1 text-[11px] text-slate-500">{cat.description}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {featuredPackages.length > 0 && (
+        <section className="mx-auto max-w-5xl px-4 pt-12 sm:px-6 lg:px-8">
+          <div className="mb-6 flex items-end justify-between gap-4">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-widest text-amber-400">Popular combos</span>
+              <h2 className="mt-1 text-2xl font-black text-white">Ready for the basket</h2>
+            </div>
+            <Link href="/packages" className="text-xs font-bold text-amber-400">View all →</Link>
+          </div>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            {featuredPackages.map((pkg) => (
+              <PackageCard key={pkg.id} pkg={pkg} allProducts={allProducts} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {featuredProducts.length > 0 && (
+        <section className="mx-auto max-w-5xl px-4 pt-12 sm:px-6 lg:px-8">
+          <div className="mb-6 flex items-end justify-between gap-4">
+            <div>
+              <span className="text-xs font-bold uppercase tracking-widest text-amber-400">Catalog highlights</span>
+              <h2 className="mt-1 text-2xl font-black text-white">Shop individual crackers</h2>
+            </div>
+            <Link href="/products" className="text-xs font-bold text-amber-400">View all →</Link>
+          </div>
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {featuredProducts.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }

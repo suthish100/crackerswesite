@@ -1,0 +1,126 @@
+// Crackers E-Commerce — Prisma Schema
+// Using SQLite for local dev. Swap to PostgreSQL by changing provider + DATABASE_URL.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Category {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  slug        String    @unique
+  description String?
+  isActive    Boolean   @default(true)
+  products    Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id         Int      @id @default(autoincrement())
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
+  name       String
+  slug       String   @unique
+  sku        String?  @unique
+  description String?
+  originalPrice Float?
+  price      Float
+  stockQty   Int      @default(0)
+  imageUrl   String   @default("/uploads/placeholder.png")
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  packageItems PackageItem[]
+  orderItems   OrderItem[]
+
+  @@map("products")
+}
+
+model Package {
+  id          Int      @id @default(autoincrement())
+  name        String
+  slug        String   @unique
+  description String?
+  imageUrl    String   @default("/uploads/placeholder.png")
+  basePrice   Float
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  items      PackageItem[]
+  orderItems OrderItem[]
+
+  @@map("packages")
+}
+
+model PackageItem {
+  id         Int     @id @default(autoincrement())
+  packageId  Int
+  package    Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  productId  Int
+  product    Product @relation(fields: [productId], references: [id])
+  defaultQty Int     @default(1)
+
+  @@unique([packageId, productId])
+  @@map("package_items")
+}
+
+model AdminUser {
+  id           Int    @id @default(autoincrement())
+  name         String
+  phone        String @unique
+  role         String @default("owner") // "owner" | "staff"
+  passwordHash String
+
+  @@map("admin_users")
+}
+
+model Order {
+  id              Int      @id @default(autoincrement())
+  publicOrderId   String   @unique
+  customerName    String
+  customerPhone   String
+  customerAddress String
+  customerNote    String?
+  status          String   @default("Received") // Received | Verifying | Confirmed | Payment Done | Packed | Dispatched | Cancelled
+  totalAmount     Float
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  items         OrderItem[]
+  statusHistory OrderStatusHistory[]
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id              Int      @id @default(autoincrement())
+  orderId         Int
+  order           Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId       Int
+  product         Product  @relation(fields: [productId], references: [id])
+  sourcePackageId Int?
+  sourcePackage   Package? @relation(fields: [sourcePackageId], references: [id])
+  quantity        Int
+  unitPrice       Float
+
+  @@map("order_items")
+}
+
+model OrderStatusHistory {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  status    String
+  note      String?
+  changedAt DateTime @default(now())
+
+  @@map("order_status_history")
+}
