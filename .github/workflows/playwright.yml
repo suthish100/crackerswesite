@@ -1,0 +1,78 @@
+name: Playwright Tests
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: test
+          POSTGRES_PASSWORD: test
+          POSTGRES_DB: crackers_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://test:test@localhost:5432/crackers_test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Apply Prisma migrations
+        run: npx prisma migrate deploy
+
+      - name: Seed the test database
+        run: npx prisma db seed
+        env:
+          SEED_ADMIN_PHONE: ${{ secrets.TEST_ADMIN_PHONE || '9999999999' }}
+          SEED_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD || 'Akashkumar@2006' }}
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Build Next.js app
+        run: npm run build
+
+      - name: Start app
+        run: npm run start &
+
+      - name: Wait for app to be ready
+        run: npx wait-on http://localhost:3000
+
+      - name: Run Playwright tests
+        run: npx playwright test
+        env:
+          BASE_URL: http://localhost:3000
+          CI: true
+          TEST_ADMIN_PHONE: ${{ secrets.TEST_ADMIN_PHONE }}
+          TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
+
+      - name: Upload HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 14

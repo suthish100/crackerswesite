@@ -14,7 +14,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Verify products and calculate total
     let totalAmount = 0;
     const orderItemsToCreate: Array<{
       productId: number;
@@ -26,39 +25,40 @@ export async function POST(request: NextRequest) {
     const whatsappItemsList: Array<{ name: string; quantity: number; unitPrice: number }> = [];
 
     for (const item of items) {
-      const product = await prisma.product.findUnique({
-        where: { id: item.productId },
-      });
-
-      if (!product || !product.isActive) {
-        return NextResponse.json(
-          { success: false, message: `Product "${item.productName || item.productId}" is unavailable` },
-          { status: 400 }
-        );
+      if (!Number.isInteger(item.quantity) || item.quantity <= 0) {
+        return NextResponse.json({ success: false, message: 'Each item quantity must be a positive whole number' }, { status: 400 });
       }
-
-      const itemTotal = product.price * item.quantity;
-      totalAmount += itemTotal;
-
-      orderItemsToCreate.push({
-        productId: product.id,
-        sourcePackageId: item.sourcePackageId || null,
-        quantity: item.quantity,
-        unitPrice: product.price,
-      });
-
-      whatsappItemsList.push({
-        name: product.name,
-        quantity: item.quantity,
-        unitPrice: product.price,
-      });
     }
 
     const publicOrderId = generateOrderId();
 
-    // Inventory is availability based; products remain orderable while active.
-    // Keep order creation transactional so the order and its items are atomic.
     const result = await prisma.$transaction(async (tx) => {
+      for (const item of items) {
+        const product = await tx.product.findUnique({ where: { id: item.productId } });
+
+        if (!product || !product.isActive) {
+          throw new Error(`PRODUCT_UNAVAILABLE:${item.productName || item.productId}`);
+        }
+
+        const reserved = await tx.product.updateMany({
+          where: { id: product.id, isActive: true, stockQty: { gte: item.quantity } },
+          data: { stockQty: { decrement: item.quantity } },
+        });
+
+        if (reserved.count !== 1) {
+          throw new Error(`INSUFFICIENT_STOCK:${product.name}`);
+        }
+
+        totalAmount += product.price * item.quantity;
+        orderItemsToCreate.push({
+          productId: product.id,
+          sourcePackageId: item.sourcePackageId || null,
+          quantity: item.quantity,
+          unitPrice: product.price,
+        });
+        whatsappItemsList.push({ name: product.name, quantity: item.quantity, unitPrice: product.price });
+      }
+
       // Create order
       const order = await tx.order.create({
         data: {
@@ -86,7 +86,7 @@ export async function POST(request: NextRequest) {
       });
 
       return order;
-    });
+    }, { maxWait: 15000, timeout: 30000 });
 
     const adminPhone = process.env.NEXT_PUBLIC_ADMIN_WHATSAPP || ORDER_SUPPORT_PHONE;
     const whatsappLink = generateWhatsAppLink(
@@ -115,7 +115,14 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('Error creating order:', error);
-    const message = error instanceof Error && error.message.includes('Can\'t reach database server')
+    const errorMessage = error instanceof Error ? error.message : '';
+    if (errorMessage.startsWith('PRODUCT_UNAVAILABLE:')) {
+      return NextResponse.json({ success: false, message: `Product "${errorMessage.slice('PRODUCT_UNAVAILABLE:'.length)}" is unavailable` }, { status: 400 });
+    }
+    if (errorMessage.startsWith('INSUFFICIENT_STOCK:')) {
+      return NextResponse.json({ success: false, message: `Not enough stock for "${errorMessage.slice('INSUFFICIENT_STOCK:'.length)}"` }, { status: 409 });
+    }
+    const message = errorMessage.includes('Can\'t reach database server')
       ? 'The order service is temporarily unavailable. Please try again in a moment.'
       : 'Failed to create order';
     return NextResponse.json({ success: false, message }, { status: 503 });

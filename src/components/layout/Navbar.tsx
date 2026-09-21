@@ -57,7 +57,7 @@ export const Navbar: React.FC = () => {
             </svg>
             <span className="hidden sm:inline">Basket</span>
             {totalItemCount > 0 && (
-              <span className="ml-1 bg-slate-950 text-amber-400 text-xs font-black px-2 py-0.5 rounded-full border border-amber-400">
+              <span data-testid="cart-count" className="ml-1 bg-slate-950 text-amber-400 text-xs font-black px-2 py-0.5 rounded-full border border-amber-400">
                 {totalItemCount}
               </span>
             )}

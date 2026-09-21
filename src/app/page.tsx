@@ -58,7 +58,7 @@ export default async function HomePage() {
           </div>
           <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
             {categories.slice(0, 8).map((cat) => (
-              <Link key={cat.id} href={`/products?category=${cat.slug}`} className="rounded-xl border border-slate-800 bg-slate-900/70 p-4 transition hover:border-amber-500/50">
+              <Link key={cat.id} data-testid="category-link" href={`/products?category=${cat.slug}`} className="rounded-xl border border-slate-800 bg-slate-900/70 p-4 transition hover:border-amber-500/50">
                 <span className="text-xl text-amber-400" aria-hidden="true">✦</span>
                 <h3 className="mt-3 text-sm font-bold text-white">{cat.name}</h3>
                 <p className="mt-1 line-clamp-1 text-[11px] text-slate-500">{cat.description}</p>

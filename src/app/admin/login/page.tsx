@@ -60,6 +60,7 @@ export default function AdminLoginPage() {
               Phone Number or Username
             </label>
             <input
+              data-testid="admin-phone"
               type="text"
               required
               value={identifier}
@@ -74,6 +75,7 @@ export default function AdminLoginPage() {
               Password
             </label>
             <input
+              data-testid="admin-password"
               type="password"
               required
               value={password}
@@ -84,6 +86,7 @@ export default function AdminLoginPage() {
           </div>
 
           <button
+            data-testid="admin-login-submit"
             type="submit"
             disabled={loading}
             className="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-extrabold text-sm shadow-xl shadow-amber-500/20 transition-all disabled:opacity-50 mt-2"

@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sivakasi Crackers Store
 
-## Getting Started
+Next.js ecommerce storefront with Prisma/PostgreSQL persistence, Neon support, customer checkout, order tracking, and an authenticated admin order console.
 
-First, run the development server:
+## Local setup
+
+1. Copy `.env.example` to `.env` and set `DATABASE_URL` to the Neon pooled connection string. Keep `.env` private.
+2. Install dependencies and generate Prisma Client:
+
+```bash
+npm install
+npm run db:generate
+```
+
+3. Apply the schema and seed the catalog/admin account:
+
+```bash
+npm run db:migrate
+npm run db:seed
+```
+
+4. Start the app:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000`. The seeded admin login is the phone and password defined in `prisma/seed.ts`; change that password before production use.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Production deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Use a host such as Vercel for the Next.js app and add these environment variables in the production environment:
 
-## Learn More
+- `DATABASE_URL`: Neon pooled PostgreSQL URL for runtime queries.
+- `JWT_SECRET`: long random secret, different from development.
+- `NEXT_PUBLIC_ADMIN_WHATSAPP`: support number used for order handoff.
+- `SEED_ADMIN_PHONE` and `SEED_ADMIN_PASSWORD`: set these only when seeding a new environment; they are used to create the first admin account.
 
-To learn more about Next.js, take a look at the following resources:
+Run migrations during deployment with `npm run db:migrate`. Run `npm run db:seed` once for a new environment with `SEED_ADMIN_PHONE` and `SEED_ADMIN_PASSWORD` set, then remove those seed variables before accepting orders.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The GitHub Actions workflow uses an isolated PostgreSQL service, applies the checked-in migration, seeds it, builds the app, and runs Playwright tests. Pull-request Neon branches are created by `.github/workflows/neon_workflow.yml` when `NEON_PROJECT_ID` and `NEON_API_KEY` are configured in GitHub.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Docker deployment
 
-## Deploy on Vercel
+The production image uses Next.js standalone output and connects to Neon through `DATABASE_URL`. Create `.env` from `.env.example`, set the production secrets, apply migrations, and start the container:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+npm run db:migrate
+docker compose up --build -d
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The app is available at `http://localhost:3000`. Run migrations outside the container with a direct Neon connection before deploying; keep the pooled URL in the running app for normal traffic.
+
+## Order lifecycle
+
+Checkout validates each product and quantity, reserves stock, and creates the order, order items, and initial status history in one database transaction. The admin order screen refreshes every five seconds, and status changes append to the status history used by customer order tracking.

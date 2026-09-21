@@ -1,5 +1,5 @@
 // Crackers E-Commerce — Prisma Schema
-// Using SQLite for local dev. Swap to PostgreSQL by changing provider + DATABASE_URL.
+// PostgreSQL schema for local and Neon production environments.
 
 generator client {
   provider = "prisma-client-js"
@@ -8,6 +8,17 @@ generator client {
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  passwordHash String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@map("users")
 }
 
 model Category {

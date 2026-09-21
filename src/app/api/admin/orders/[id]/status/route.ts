@@ -56,7 +56,7 @@ export const PATCH = requireAdmin(async (req: Request) => {
       });
 
       return updated;
-    });
+    }, { maxWait: 15000, timeout: 30000 });
 
     return NextResponse.json({
       success: true,

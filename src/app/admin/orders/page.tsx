@@ -18,23 +18,28 @@ export default function AdminOrdersPage() {
   const [newStatus, setNewStatus] = useState('');
   const [statusNote, setStatusNote] = useState('');
 
-  const fetchOrders = async () => {
-    try {
-      const url = `/api/admin/orders?status=${statusFilter}&search=${encodeURIComponent(searchQuery)}`;
-      const res = await fetch(url);
-      const data = await res.json();
-      if (data.success) {
-        setOrders(data.orders);
-      }
-    } catch (e) {
-      console.error('Fetch admin orders error:', e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchOrders();
+    let active = true;
+
+    const loadOrders = async () => {
+      try {
+        const url = `/api/admin/orders?status=${statusFilter}&search=${encodeURIComponent(searchQuery)}`;
+        const res = await fetch(url, { cache: 'no-store' });
+        const data = await res.json();
+        if (active && data.success) setOrders(data.orders);
+      } catch (e) {
+        console.error('Fetch admin orders error:', e);
+      } finally {
+        if (active) setLoading(false);
+      }
+    };
+
+    void loadOrders();
+    const refreshTimer = window.setInterval(loadOrders, 5000);
+    return () => {
+      active = false;
+      window.clearInterval(refreshTimer);
+    };
   }, [statusFilter, searchQuery]);
 
   const openOrderDetail = (order: Order) => {
@@ -60,12 +65,19 @@ export default function AdminOrdersPage() {
 
       const data = await res.json();
       if (data.success) {
-        fetchOrders();
+        setOrders((currentOrders) => currentOrders.map((order) => (
+          order.id === selectedOrder.id ? { ...order, status: newStatus } : order
+        )));
         // Refresh detail view
         const resDetail = await fetch(`/api/admin/orders/${selectedOrder.id}`);
         const dataDetail = await resDetail.json();
         if (dataDetail.success) {
           setSelectedOrder(dataDetail.order);
+          setOrders((currentOrders) => currentOrders.map((order) => (
+            order.id === dataDetail.order.id
+              ? { ...order, ...dataDetail.order }
+              : order
+          )));
         }
         setStatusNote('');
       } else {
@@ -155,7 +167,7 @@ export default function AdminOrdersPage() {
                   </tr>
                 ) : (
                   orders.map((o) => (
-                    <tr key={o.id} className="hover:bg-slate-950/40">
+                    <tr key={o.id} data-testid="order-row" className="hover:bg-slate-950/40">
                       <td className="p-4 font-mono font-bold text-amber-400 text-sm">{o.publicOrderId}</td>
                       <td className="p-4">
                         <div className="font-bold text-white">{o.customerName}</div>
@@ -167,6 +179,7 @@ export default function AdminOrdersPage() {
                       <td className="p-4 font-black text-amber-300 text-sm">{formatPrice(o.totalAmount)}</td>
                       <td className="p-4">
                         <span
+                          data-testid="order-status-badge"
                           className="px-3 py-1 rounded-full text-[10px] font-bold border uppercase"
                           style={{
                             backgroundColor: `${STATUS_COLORS[o.status]}20`,
@@ -249,6 +262,7 @@ export default function AdminOrdersPage() {
                   <div className="sm:col-span-5">
                     <label className="block font-bold text-slate-300 mb-1">New Status</label>
                     <select
+                      data-testid="order-status-select"
                       value={newStatus}
                       onChange={(e) => setNewStatus(e.target.value)}
                       className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold"

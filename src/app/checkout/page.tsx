@@ -1,41 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 import { formatPrice } from '@/lib/utils';
 import Link from 'next/link';
 
-interface InvoiceItem {
-  name: string;
-  quantity: number;
-  unitPrice: number;
-}
-
-function escapeHtml(value: string): string {
-  return value.replace(/[&<>'"]/g, (character) => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    "'": '&#39;',
-    '"': '&quot;',
-  })[character] || character);
-}
-
-function downloadInvoice(orderId: string, customerName: string, customerPhone: string, customerAddress: string, items: InvoiceItem[], totalAmount: number) {
-  const itemRows = items.map((item) => `
-    <tr><td>${escapeHtml(item.name)}</td><td>${item.quantity}</td><td>${formatPrice(item.unitPrice)}</td><td>${formatPrice(item.unitPrice * item.quantity)}</td></tr>
-  `).join('');
-  const invoice = `<!doctype html><html><head><meta charset="utf-8"><title>Invoice ${escapeHtml(orderId)}</title><style>body{font-family:Arial,sans-serif;max-width:760px;margin:40px auto;color:#172033}h1{color:#d97706}table{width:100%;border-collapse:collapse;margin-top:24px}th,td{border-bottom:1px solid #ddd;padding:10px;text-align:left}th{background:#fff7ed}.total{text-align:right;font-size:20px;font-weight:700;margin-top:24px}</style></head><body><h1>Sivakasi Crackers</h1><p>Invoice: <strong>${escapeHtml(orderId)}</strong></p><p>Customer: ${escapeHtml(customerName)}<br>Phone: ${escapeHtml(customerPhone)}<br>Address: ${escapeHtml(customerAddress)}</p><table><thead><tr><th>Product</th><th>Qty</th><th>Unit price</th><th>Total</th></tr></thead><tbody>${itemRows}</tbody></table><p class="total">Grand Total: ${formatPrice(totalAmount)}</p><p>Thank you for your order.</p></body></html>`;
-  const url = URL.createObjectURL(new Blob([invoice], { type: 'text/html' }));
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `invoice-${orderId}.html`;
-  link.click();
-  window.setTimeout(() => URL.revokeObjectURL(url), 1000);
-}
-
 export default function CheckoutPage() {
   const { items, totalAmount, clearCart } = useCart();
+  const router = useRouter();
 
   const [customerName, setCustomerName] = useState('');
   const [customerPhone, setCustomerPhone] = useState('');
@@ -98,17 +71,6 @@ export default function CheckoutPage() {
         throw new Error(data.message || 'Failed to place order');
       }
 
-      downloadInvoice(
-        data.order.publicOrderId,
-        data.order.customerName,
-        data.order.customerPhone,
-        data.order.customerAddress,
-        items.map((item) => ({ name: item.product.name, quantity: item.quantity, unitPrice: item.unitPrice })),
-        data.order.totalAmount,
-      );
-
-      clearCart();
-
       // Store confirmation details in session storage for confirmation screen
       sessionStorage.setItem('last_order', JSON.stringify({
         publicOrderId: data.order.publicOrderId,
@@ -119,7 +81,8 @@ export default function CheckoutPage() {
         whatsappLink: data.whatsappLink,
       }));
 
-      window.location.assign(data.whatsappLink);
+      clearCart();
+      router.push(`/order-confirmation?orderId=${encodeURIComponent(data.order.publicOrderId)}`);
     } catch (err: unknown) {
       console.error('Checkout submit error:', err);
       setErrorMsg(err instanceof Error ? err.message : 'Something went wrong while submitting your order.');
@@ -145,7 +108,7 @@ export default function CheckoutPage() {
           </h2>
 
           {errorMsg && (
-            <div className="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs font-semibold">
+            <div data-testid="checkout-error" className="mb-6 p-4 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-300 text-xs font-semibold">
               ⚠️ {errorMsg}
             </div>
           )}
@@ -156,8 +119,8 @@ export default function CheckoutPage() {
                 Full Name <span className="text-amber-400">*</span>
               </label>
               <input
+                data-testid="customer-name"
                 type="text"
-                required
                 value={customerName}
                 onChange={(e) => setCustomerName(e.target.value)}
                 placeholder="e.g. Ramesh Kumar"
@@ -170,8 +133,8 @@ export default function CheckoutPage() {
                 WhatsApp Phone Number <span className="text-amber-400">*</span>
               </label>
               <input
+                data-testid="customer-phone"
                 type="tel"
-                required
                 value={customerPhone}
                 onChange={(e) => setCustomerPhone(e.target.value)}
                 placeholder="e.g. 9876543210"
@@ -185,7 +148,7 @@ export default function CheckoutPage() {
                 Full Delivery Address <span className="text-amber-400">*</span>
               </label>
               <textarea
-                required
+                data-testid="customer-address"
                 rows={3}
                 value={customerAddress}
                 onChange={(e) => setCustomerAddress(e.target.value)}
@@ -209,14 +172,15 @@ export default function CheckoutPage() {
 
             <div className="pt-4">
               <button
+                data-testid="place-order"
                 type="submit"
                 disabled={loading}
                 className="w-full py-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-black text-base shadow-xl shadow-amber-500/20 transition-all disabled:opacity-50"
               >
-                {loading ? 'Creating invoice...' : 'Download Invoice & Send on WhatsApp →'}
+                {loading ? 'Placing order...' : 'Place order →'}
               </button>
               <p className="mt-3 text-center text-[11px] text-slate-500">
-                Your invoice downloads first, then WhatsApp opens ready to send it to +91 8925700923.
+                Our team will contact you to confirm payment and delivery details.
               </p>
             </div>
           </form>

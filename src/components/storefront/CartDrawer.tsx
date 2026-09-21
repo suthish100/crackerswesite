@@ -86,6 +86,7 @@ export const CartDrawer: React.FC = () => {
                       </button>
                       <span className="text-xs font-bold text-white px-2">{item.quantity}</span>
                       <button
+                        data-testid="qty-increase"
                         onClick={() => updateQuantity(item.cartItemId, item.quantity + 1)}
                         className="w-6 h-6 rounded bg-slate-800 text-slate-300 font-bold flex items-center justify-center hover:bg-slate-700 text-xs"
                       >
@@ -116,7 +117,7 @@ export const CartDrawer: React.FC = () => {
             <div className="p-6 bg-slate-950 border-t border-slate-800 space-y-4">
               <div className="flex justify-between items-center text-slate-300 text-sm">
                 <span>Total Amount</span>
-                <span className="text-xl font-black text-amber-400">{formatPrice(totalAmount)}</span>
+                <span data-testid="cart-total" className="text-xl font-black text-amber-400">{formatPrice(totalAmount)}</span>
               </div>
 
               <div className="flex gap-3">

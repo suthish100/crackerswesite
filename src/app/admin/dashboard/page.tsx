@@ -2,23 +2,66 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { formatPrice, STATUS_COLORS } from '@/lib/utils';
+import { formatPrice, ORDER_STATUSES, STATUS_COLORS } from '@/lib/utils';
+
+interface RecentOrder {
+  id: number;
+  publicOrderId: string;
+  customerName: string;
+  customerPhone: string;
+  totalAmount: number;
+  status: string;
+  createdAt: string;
+  updatedAt?: string;
+}
+
+interface DashboardStats {
+  totalRevenue: number;
+  totalOrders: number;
+  totalProducts: number;
+  lowStockProducts: number;
+  ordersByStatus: Record<string, number>;
+  recentOrders: RecentOrder[];
+}
 
 export default function AdminDashboardPage() {
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const loadStats = async () => {
+    const res = await fetch('/api/admin/stats', { cache: 'no-store' });
+    const data = await res.json();
+    if (data.success) setStats(data.stats);
+    return data.success;
+  };
+
   useEffect(() => {
-    fetch('/api/admin/stats')
+    fetch('/api/admin/stats', { cache: 'no-store' })
       .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          setStats(data.stats);
-        }
+      .then((data: { success: boolean; stats?: DashboardStats }) => {
+        if (data.success && data.stats) setStats(data.stats);
       })
       .catch((e) => console.error('Dashboard stats fetch error:', e))
       .finally(() => setLoading(false));
+
+    const events = new EventSource('/api/admin/events');
+    events.addEventListener('snapshot', (event) => {
+      const snapshot = JSON.parse((event as MessageEvent).data);
+      setStats((current) => current ? { ...current, ...snapshot } : current);
+    });
+    events.onerror = () => console.warn('Dashboard live updates temporarily unavailable');
+    return () => events.close();
   }, []);
+
+  const updateOrderStatus = async (orderId: number, status: string) => {
+    const res = await fetch(`/api/admin/orders/${orderId}/status`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status }),
+    });
+    if (!res.ok) throw new Error('Unable to update order status');
+    await loadStats();
+  };
 
   if (loading) {
     return (
@@ -89,7 +132,7 @@ export default function AdminDashboardPage() {
       <div className="bg-slate-900 border border-slate-800 p-6 rounded-3xl">
         <h3 className="text-sm font-bold uppercase tracking-wider text-slate-300 mb-4">Orders Distribution by Status</h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-3">
-          {Object.entries(stats.ordersByStatus || {}).map(([status, count]: [string, any]) => (
+          {Object.entries(stats.ordersByStatus || {}).map(([status, count]) => (
             <div
               key={status}
               className="bg-slate-950 p-3.5 rounded-xl border border-slate-800 text-center"
@@ -131,7 +174,7 @@ export default function AdminDashboardPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-800 text-slate-300">
-                {stats.recentOrders?.map((order: any) => (
+                {stats.recentOrders?.map((order) => (
                   <tr key={order.id} className="hover:bg-slate-950/50">
                     <td className="p-3 font-mono font-bold text-amber-400">{order.publicOrderId}</td>
                     <td className="p-3 font-semibold text-white">{order.customerName}</td>
@@ -148,6 +191,16 @@ export default function AdminDashboardPage() {
                       >
                         {order.status}
                       </span>
+                    </td>
+                    <td className="p-3 text-right">
+                      <select
+                        aria-label={`Update ${order.publicOrderId} status`}
+                        value={order.status}
+                        onChange={(event) => void updateOrderStatus(order.id, event.target.value).catch((error) => console.error(error))}
+                        className="rounded-lg border border-slate-700 bg-slate-950 px-2 py-1 text-[11px] text-slate-200"
+                      >
+                        {ORDER_STATUSES.map((status) => <option key={status} value={status}>{status}</option>)}
+                      </select>
                     </td>
                     <td className="p-3 text-slate-500">
                       {new Date(order.createdAt).toLocaleDateString('en-IN')}

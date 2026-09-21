@@ -23,7 +23,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const isOutOfStock = false;
 
   return (
-    <div className="bg-slate-900 border border-slate-800 hover:border-amber-500/40 rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col group">
+    <div
+      data-testid="product-card"
+      data-out-of-stock={isOutOfStock ? 'true' : 'false'}
+      className="bg-slate-900 border border-slate-800 hover:border-amber-500/40 rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:-translate-y-1 flex flex-col group"
+    >
       {/* Product Image Placeholder Container */}
       <div className="relative h-44 bg-gradient-to-b from-slate-800 to-slate-900 flex items-center justify-center overflow-hidden">
         <span className="text-5xl group-hover:scale-110 transition-transform duration-300">🧨</span>
@@ -62,7 +66,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             {product.originalPrice && product.originalPrice > product.price && (
               <span className="mr-2 text-xs text-slate-500 line-through">{formatPrice(product.originalPrice)}</span>
             )}
-            <span className="text-lg font-black text-amber-400">{formatPrice(product.price)}</span>
+            <span data-testid="product-price" className="text-lg font-black text-amber-400">{formatPrice(product.price)}</span>
           </div>
 
           {!isOutOfStock && (
@@ -86,6 +90,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               </div>
 
               <button
+                data-testid="add-to-cart"
                 onClick={handleAdd}
                 className={`px-3 py-2 rounded-lg font-bold text-xs shadow-md transition-all active:scale-95 ${
                   added

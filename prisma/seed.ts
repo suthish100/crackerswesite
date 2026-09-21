@@ -146,18 +146,30 @@ async function main() {
   console.log(`✅ ${productsData.length} products seeded`);
 
   // 3. Seed Admin User
-  const passwordHash = await bcrypt.hash('Akashkumar@2006', 10);
+  const adminPhone = process.env.SEED_ADMIN_PHONE || '9999999999';
+  const adminPassword = process.env.SEED_ADMIN_PASSWORD || 'Akashkumar@2006';
+  const passwordHash = await bcrypt.hash(adminPassword, 10);
   await prisma.adminUser.upsert({
-    where: { phone: '9999999999' },
+    where: { phone: adminPhone },
     update: {},
     create: {
       name: 'Akash Kumar',
-      phone: '9999999999',
+      phone: adminPhone,
       role: 'owner',
       passwordHash,
     },
   });
-  console.log('✅ Admin user seeded (name: Akash Kumar)');
+  console.log(`✅ Admin user seeded (phone: ${adminPhone})`);
+
+  await prisma.user.upsert({
+    where: { email: 'demo.customer@example.com' },
+    update: {},
+    create: {
+      name: 'Demo Customer',
+      email: 'demo.customer@example.com',
+    },
+  });
+  console.log('✅ Demo customer user seeded');
 
   // 4. Seed Ready-Made Packages
   const allProducts = await prisma.product.findMany();

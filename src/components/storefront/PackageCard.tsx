@@ -26,7 +26,7 @@ export const PackageCard: React.FC<PackageCardProps> = ({ pkg, allProducts = [] 
 
   return (
     <>
-      <div className="bg-slate-900 border border-amber-500/30 hover:border-amber-400 rounded-2xl overflow-hidden shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col group">
+      <div data-testid="package-card" className="bg-slate-900 border border-amber-500/30 hover:border-amber-400 rounded-2xl overflow-hidden shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col group">
         {/* Header Ribbon */}
         <div className="relative h-48 bg-gradient-to-tr from-amber-950 via-slate-900 to-orange-950 flex items-center justify-center overflow-hidden p-6">
           <span className="text-6xl group-hover:scale-110 transition-transform duration-300">🎁</span>
@@ -57,7 +57,7 @@ export const PackageCard: React.FC<PackageCardProps> = ({ pkg, allProducts = [] 
               </h4>
               <ul className="space-y-1 text-xs text-slate-300">
                 {pkg.items?.slice(0, 4).map((item) => (
-                  <li key={item.id} className="flex justify-between items-center text-slate-300">
+                  <li key={item.id} data-testid="package-item" className="flex justify-between items-center text-slate-300">
                     <span className="truncate pr-2">• {item.product.name}</span>
                     <span className="font-bold text-amber-400/80 flex-shrink-0">× {item.defaultQty}</span>
                   </li>
@@ -76,7 +76,7 @@ export const PackageCard: React.FC<PackageCardProps> = ({ pkg, allProducts = [] 
             <div className="flex items-center justify-between">
               <div>
                 <span className="text-[10px] text-slate-400 block uppercase font-bold">Base Package Price</span>
-                <span className="text-xl font-black text-amber-400">{formatPrice(pkg.basePrice)}</span>
+                <span data-testid="package-price" className="text-xl font-black text-amber-400">{formatPrice(pkg.basePrice)}</span>
               </div>
             </div>
 

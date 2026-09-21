@@ -30,7 +30,7 @@ function OrderConfirmationContent() {
   const displayOrderId = orderData?.publicOrderId || orderId || 'CR2026-XXXX';
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-16 text-center space-y-8">
+    <div data-testid="order-confirmation" className="max-w-3xl mx-auto px-4 py-16 text-center space-y-8">
       {/* Celebration Icon */}
       <div className="w-20 h-20 bg-gradient-to-tr from-amber-500 to-emerald-500 text-slate-950 rounded-full flex items-center justify-center text-4xl font-black mx-auto shadow-2xl shadow-emerald-500/20 animate-bounce">
         ✓
@@ -51,7 +51,7 @@ function OrderConfirmationContent() {
         <div className="text-left space-y-2 text-xs">
           <div className="flex justify-between items-center pb-3 border-b border-slate-800">
             <span className="text-slate-400 font-semibold uppercase">Tracking ID:</span>
-            <span className="text-base font-black text-amber-400 tracking-wider font-mono">{displayOrderId}</span>
+            <span data-testid="public-order-id" className="text-base font-black text-amber-400 tracking-wider font-mono">{displayOrderId}</span>
           </div>
 
           {orderData?.totalAmount && (
