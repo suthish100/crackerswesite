@@ -5,6 +5,11 @@ import type { Prisma } from '@prisma/client';
 
 export const revalidate = 0;
 
+export const metadata = {
+  title: 'All Crackers & Fireworks Catalog | Sivakasi Crackers',
+  description: 'Browse certified green crackers, sparklers, flower pots, ground chakkars, rockets, and fancy aerial shots at direct factory prices from Sivakasi.',
+};
+
 interface ProductsPageProps {
   searchParams: Promise<{
     category?: string;

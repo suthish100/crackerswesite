@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, Suspense } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { formatPrice, ORDER_SUPPORT_PHONE } from '@/lib/utils';
@@ -9,25 +9,32 @@ function OrderConfirmationContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get('orderId');
 
-  const [orderData] = useState<{
+  const [orderData, setOrderData] = useState<{
     publicOrderId: string;
     customerName: string;
     customerPhone: string;
     customerAddress: string;
     totalAmount: number;
     whatsappLink: string;
-  } | null>(() => {
-    if (typeof window === 'undefined') return null;
+  } | null>(null);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
     try {
       const saved = sessionStorage.getItem('last_order');
-      return saved ? JSON.parse(saved) : null;
+      // Client-only session storage must be read after hydration.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setOrderData(saved ? JSON.parse(saved) : null);
     } catch (e) {
       console.error('Failed to parse last_order:', e);
-      return null;
+      // Keep the confirmation page usable when session storage is unavailable.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setOrderData(null);
     }
-  });
+  }, []);
 
   const displayOrderId = orderData?.publicOrderId || orderId || 'CR2026-XXXX';
+  const displayCustomerName = orderData?.customerName || 'Customer';
 
   return (
     <div data-testid="order-confirmation" className="max-w-3xl mx-auto px-4 py-16 text-center space-y-8">
@@ -42,7 +49,7 @@ function OrderConfirmationContent() {
         </span>
         <h1 className="text-3xl sm:text-4xl font-black text-white mt-3">Order Received!</h1>
         <p className="text-slate-400 text-sm mt-2 max-w-md mx-auto">
-          Thank you, <span className="text-white font-bold">{orderData?.customerName || 'Customer'}</span>! Your order has been registered in our system.
+          Thank you, <span className="text-white font-bold">{displayCustomerName}</span>! Your order has been registered in our system.
         </p>
       </div>
 

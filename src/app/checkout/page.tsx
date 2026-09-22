@@ -72,14 +72,18 @@ export default function CheckoutPage() {
       }
 
       // Store confirmation details in session storage for confirmation screen
-      sessionStorage.setItem('last_order', JSON.stringify({
-        publicOrderId: data.order.publicOrderId,
-        customerName: data.order.customerName,
-        customerPhone: data.order.customerPhone,
-        customerAddress: data.order.customerAddress,
-        totalAmount: data.order.totalAmount,
-        whatsappLink: data.whatsappLink,
-      }));
+      try {
+        sessionStorage.setItem('last_order', JSON.stringify({
+          publicOrderId: data.order.publicOrderId,
+          customerName: data.order.customerName,
+          customerPhone: data.order.customerPhone,
+          customerAddress: data.order.customerAddress,
+          totalAmount: data.order.totalAmount,
+          whatsappLink: data.whatsappLink,
+        }));
+      } catch (storageError) {
+        console.warn('Unable to persist order confirmation metadata:', storageError);
+      }
 
       clearCart();
       router.push(`/order-confirmation?orderId=${encodeURIComponent(data.order.publicOrderId)}`);

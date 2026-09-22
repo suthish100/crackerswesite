@@ -29,9 +29,9 @@ export default function AdminLoginPage() {
       }
 
       router.push('/admin/dashboard');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Login error:', err);
-      setErrorMsg(err.message || 'Invalid username/phone or password');
+      setErrorMsg(err instanceof Error ? err.message : 'Invalid username/phone or password');
     } finally {
       setLoading(false);
     }
@@ -95,9 +95,11 @@ export default function AdminLoginPage() {
           </button>
         </form>
 
-        <div className="p-3 rounded-xl bg-slate-950 text-[11px] text-slate-500 text-center border border-slate-800/80">
-          Default seeded admin: <span className="text-amber-400 font-mono font-bold">9999999999</span> / <span className="text-amber-400 font-mono font-bold">Akashkumar@2006</span>
-        </div>
+        {process.env.NODE_ENV !== 'production' && (
+          <div className="p-3 rounded-xl bg-slate-950 text-[11px] text-slate-500 text-center border border-slate-800/80">
+            Dev seed helper: <span className="text-amber-400 font-mono font-bold">9999999999</span> / <span className="text-amber-400 font-mono font-bold">Akashkumar@2006</span>
+          </div>
+        )}
       </div>
     </div>
   );

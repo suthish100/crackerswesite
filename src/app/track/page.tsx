@@ -3,7 +3,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { Order } from '@/types';
-import { formatPrice, ORDER_STATUSES, STATUS_COLORS } from '@/lib/utils';
+import { formatPrice, ORDER_STATUSES, STATUS_COLORS, type OrderStatus } from '@/lib/utils';
 
 function TrackOrderContent() {
   const searchParams = useSearchParams();
@@ -30,9 +30,9 @@ function TrackOrderContent() {
       }
 
       setOrder(data.order);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Tracking fetch error:', err);
-      setErrorMsg(err.message || 'Failed to locate order.');
+      setErrorMsg(err instanceof Error ? err.message : 'Failed to locate order.');
       setOrder(null);
     } finally {
       setLoading(false);
@@ -41,6 +41,8 @@ function TrackOrderContent() {
 
   useEffect(() => {
     if (defaultPhone && defaultOrderId) {
+      // The request resolves asynchronously; this synchronizes URL-provided lookup values.
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchTracking(defaultPhone, defaultOrderId);
     }
   }, [defaultPhone, defaultOrderId]);
@@ -141,7 +143,7 @@ function TrackOrderContent() {
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-6">Execution Progress</h3>
             <div className="grid grid-cols-2 sm:grid-cols-6 gap-2">
               {ORDER_STATUSES.filter(s => s !== 'Cancelled').map((stepName, idx) => {
-                const currentIdx = ORDER_STATUSES.indexOf(order.status as any);
+                const currentIdx = ORDER_STATUSES.indexOf(order.status as OrderStatus);
                 const stepIdx = ORDER_STATUSES.indexOf(stepName);
                 const isPassed = currentIdx >= stepIdx && order.status !== 'Cancelled';
                 const isCurrent = order.status === stepName;

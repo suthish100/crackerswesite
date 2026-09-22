@@ -38,6 +38,8 @@ export default function AdminPackagesPage() {
   };
 
   useEffect(() => {
+    // The request resolves asynchronously; this synchronizes the initial remote state.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchData();
   }, []);
 

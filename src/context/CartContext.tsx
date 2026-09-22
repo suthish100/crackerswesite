@@ -27,11 +27,14 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const saved = localStorage.getItem('crackers_cart');
       if (saved) {
+        // Client-only storage is the source of the initial cart after hydration.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setItems(JSON.parse(saved));
       }
     } catch (e) {
       console.error('Failed to load cart from localStorage:', e);
     }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoaded(true);
   }, []);
 
@@ -86,7 +89,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const itemsToAdd = customizedItems || pkg.items?.map(i => ({ product: i.product, quantity: i.defaultQty })) || [];
     
     setItems((prev) => {
-      let updated = [...prev];
+      const updated = [...prev];
       itemsToAdd.forEach(({ product, quantity }) => {
         if (quantity <= 0) return;
         const cartItemId = `pkg-${pkg.id}-p-${product.id}`;

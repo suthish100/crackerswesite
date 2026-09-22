@@ -3,23 +3,35 @@ import { PackageCard } from '@/components/storefront/PackageCard';
 
 export const revalidate = 0;
 
+export const metadata = {
+  title: 'Diwali Packages & Ready Combos | Sivakasi Crackers',
+  description: 'Pre-assembled family celebration gift boxes and customizable festival combos at wholesale rates direct from Sivakasi factories.',
+};
+
 export default async function PackagesPage() {
-  const [packages, allProducts] = await Promise.all([
-    prisma.package.findMany({
-      where: { isActive: true },
-      orderBy: { id: 'desc' },
-      include: {
-        items: {
-          include: {
-            product: true,
+  let packages: Awaited<ReturnType<typeof prisma.package.findMany<{ include: { items: { include: { product: true } } } }>>> = [];
+  let allProducts: Awaited<ReturnType<typeof prisma.product.findMany>> = [];
+
+  try {
+    [packages, allProducts] = await Promise.all([
+      prisma.package.findMany({
+        where: { isActive: true },
+        orderBy: { id: 'desc' },
+        include: {
+          items: {
+            include: {
+              product: true,
+            },
           },
         },
-      },
-    }),
-    prisma.product.findMany({
-      where: { isActive: true },
-    }),
-  ]);
+      }),
+      prisma.product.findMany({
+        where: { isActive: true },
+      }),
+    ]);
+  } catch (error) {
+    console.warn('Packages page could not reach DB, cold start fallback:', error);
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">

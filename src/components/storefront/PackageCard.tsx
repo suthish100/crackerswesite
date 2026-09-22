@@ -53,7 +53,7 @@ export const PackageCard: React.FC<PackageCardProps> = ({ pkg, allProducts = [] 
             {/* Default Items Preview List */}
             <div className="mt-4 pt-3 border-t border-slate-800">
               <h4 className="text-[11px] font-bold uppercase text-amber-400/80 tracking-wider mb-2">
-                What's Inside (Default):
+                What&apos;s Inside (Default):
               </h4>
               <ul className="space-y-1 text-xs text-slate-300">
                 {pkg.items?.slice(0, 4).map((item) => (

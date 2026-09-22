@@ -13,6 +13,14 @@ export const POST = requireAdmin(async (req: Request) => {
       return NextResponse.json({ success: false, message: 'No file uploaded' }, { status: 400 });
     }
 
+    if (!file.name.toLowerCase().endsWith('.csv')) {
+      return NextResponse.json({ success: false, message: 'Invalid file format. Please upload a .csv file' }, { status: 400 });
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      return NextResponse.json({ success: false, message: 'File size exceeds 5MB limit' }, { status: 400 });
+    }
+
     const text = await file.text();
     // Some distributor exports wrap each complete CSV record in quotes
     // (including the header). Unwrap those records before parsing so the

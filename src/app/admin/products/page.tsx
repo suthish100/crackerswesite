@@ -4,6 +4,17 @@ import React, { useEffect, useState } from 'react';
 import { Product, Category } from '@/types';
 import { formatPrice } from '@/lib/utils';
 
+interface BulkUploadResult {
+  success: boolean;
+  message?: string;
+  summary?: {
+    createdCount?: number;
+    updatedCount?: number;
+    errors?: string[];
+    warnings?: string[];
+  };
+}
+
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -28,7 +39,7 @@ export default function AdminProductsPage() {
   const [isBulkModalOpen, setIsBulkModalOpen] = useState(false);
   const [bulkFile, setBulkFile] = useState<File | null>(null);
   const [bulkUploading, setBulkUploading] = useState(false);
-  const [bulkResult, setBulkResult] = useState<any>(null);
+  const [bulkResult, setBulkResult] = useState<BulkUploadResult | null>(null);
 
   const fetchProducts = async () => {
     try {
@@ -65,7 +76,11 @@ export default function AdminProductsPage() {
   };
 
   useEffect(() => {
+    // The request resolves asynchronously; this synchronizes the initial remote state.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchProducts();
+    // Only the initial page load should fetch; later refreshes use explicit actions.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const openCreateModal = () => {
@@ -520,13 +535,13 @@ export default function AdminProductsPage() {
                       <p className="font-bold mb-1">Import Finished Successfully!</p>
                       <p>Created: {bulkResult.summary?.createdCount} new products</p>
                       <p>Updated: {bulkResult.summary?.updatedCount} existing products</p>
-                      {bulkResult.summary?.errors?.length > 0 && (
-                        <p className="text-rose-400 mt-2 font-mono">Errors: {bulkResult.summary.errors.join(', ')}</p>
+                      {Boolean(bulkResult.summary?.errors && bulkResult.summary.errors.length > 0) && (
+                        <p className="text-rose-400 mt-2 font-mono">Errors: {bulkResult.summary?.errors?.join(', ')}</p>
                       )}
-                      {bulkResult.summary?.warnings?.length > 0 && (
+                      {Boolean(bulkResult.summary?.warnings && bulkResult.summary.warnings.length > 0) && (
                         <div className="mt-2 rounded-lg border border-amber-500/30 bg-amber-500/10 p-2 text-amber-200">
                           <p className="font-bold">Some values were missing and defaults were applied:</p>
-                          <p className="mt-1 font-mono">{bulkResult.summary.warnings.join(' ')}</p>
+                          <p className="mt-1 font-mono">{bulkResult.summary?.warnings?.join(' ')}</p>
                         </div>
                       )}
                     </div>

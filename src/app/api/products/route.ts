@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import type { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
@@ -8,7 +9,7 @@ export async function GET(request: NextRequest) {
     const search = searchParams.get('search');
     const sort = searchParams.get('sort');
 
-    const where: any = { isActive: true, category: { isActive: true } };
+    const where: Prisma.ProductWhereInput = { isActive: true, category: { isActive: true } };
 
     if (categorySlug) {
       where.category = { slug: categorySlug };
@@ -21,7 +22,7 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    let orderBy: any = { id: 'desc' };
+    let orderBy: Prisma.ProductOrderByWithRelationInput = { id: 'desc' };
     if (sort === 'price_asc') orderBy = { price: 'asc' };
     else if (sort === 'price_desc') orderBy = { price: 'desc' };
     else if (sort === 'name_asc') orderBy = { name: 'asc' };

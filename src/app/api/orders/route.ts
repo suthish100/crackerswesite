@@ -1,15 +1,67 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { generateOrderId, generateWhatsAppLink, ORDER_SUPPORT_PHONE } from '@/lib/utils';
+import { checkRateLimit } from '@/lib/rateLimit';
 
 export async function POST(request: NextRequest) {
   try {
+    const ip = request.headers.get('x-forwarded-for')?.split(',')[0].trim() || 'unknown-ip';
+    const rateCheck = checkRateLimit(`order_create:${ip}`, 20, 10 * 60 * 1000);
+    if (!rateCheck.allowed) {
+      return NextResponse.json(
+        { success: false, message: 'Too many order requests. Please wait a few minutes before trying again.' },
+        { status: 429 }
+      );
+    }
+
     const body = await request.json();
     const { customerName, customerPhone, customerAddress, customerNote, items } = body;
 
-    if (!customerName || !customerPhone || !customerAddress || !items || !Array.isArray(items) || items.length === 0) {
+    // Type and existence checks
+    if (
+      typeof customerName !== 'string' ||
+      typeof customerPhone !== 'string' ||
+      typeof customerAddress !== 'string' ||
+      !Array.isArray(items) ||
+      items.length === 0
+    ) {
       return NextResponse.json(
         { success: false, message: 'Customer name, phone, address, and items are required' },
+        { status: 400 }
+      );
+    }
+
+    const trimmedName = customerName.trim();
+    const cleanPhone = customerPhone.replace(/[\s\-()]/g, '');
+    const trimmedAddress = customerAddress.trim();
+    const trimmedNote = typeof customerNote === 'string' ? customerNote.trim().slice(0, 500) : null;
+
+    if (trimmedName.length < 2 || trimmedName.length > 100) {
+      return NextResponse.json(
+        { success: false, message: 'Customer name must be between 2 and 100 characters' },
+        { status: 400 }
+      );
+    }
+
+    // Phone format: 10 to 15 digits
+    const phoneRegex = /^[0-9+]{10,15}$/;
+    if (!phoneRegex.test(cleanPhone)) {
+      return NextResponse.json(
+        { success: false, message: 'Please enter a valid 10-digit phone number' },
+        { status: 400 }
+      );
+    }
+
+    if (trimmedAddress.length < 5 || trimmedAddress.length > 500) {
+      return NextResponse.json(
+        { success: false, message: 'Address must be between 5 and 500 characters' },
+        { status: 400 }
+      );
+    }
+
+    if (items.length > 100) {
+      return NextResponse.json(
+        { success: false, message: 'Order exceeds maximum allowable items (100)' },
         { status: 400 }
       );
     }
@@ -25,8 +77,11 @@ export async function POST(request: NextRequest) {
     const whatsappItemsList: Array<{ name: string; quantity: number; unitPrice: number }> = [];
 
     for (const item of items) {
-      if (!Number.isInteger(item.quantity) || item.quantity <= 0) {
-        return NextResponse.json({ success: false, message: 'Each item quantity must be a positive whole number' }, { status: 400 });
+      if (!Number.isInteger(item.productId) || item.productId <= 0) {
+        return NextResponse.json({ success: false, message: 'Invalid product ID' }, { status: 400 });
+      }
+      if (!Number.isInteger(item.quantity) || item.quantity <= 0 || item.quantity > 1000) {
+        return NextResponse.json({ success: false, message: 'Item quantity must be a positive number up to 1000' }, { status: 400 });
       }
     }
 
@@ -63,10 +118,10 @@ export async function POST(request: NextRequest) {
       const order = await tx.order.create({
         data: {
           publicOrderId,
-          customerName,
-          customerPhone,
-          customerAddress,
-          customerNote: customerNote || null,
+          customerName: trimmedName,
+          customerPhone: cleanPhone,
+          customerAddress: trimmedAddress,
+          customerNote: trimmedNote,
           status: 'Received',
           totalAmount,
           items: {

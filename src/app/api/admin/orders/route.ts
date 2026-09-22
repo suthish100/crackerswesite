@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
+import type { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { requireAdmin } from '@/lib/auth';
 
@@ -8,7 +9,7 @@ export const GET = requireAdmin(async (req: Request) => {
     const status = url.searchParams.get('status');
     const search = url.searchParams.get('search');
 
-    const where: any = {};
+    const where: Prisma.OrderWhereInput = {};
     if (status && status !== 'all') {
       where.status = status;
     }
