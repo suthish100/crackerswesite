@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
 
-const JWT_SECRET = process.env.JWT_SECRET || (process.env.NODE_ENV === 'production' ? '' : 'crackers_web_secret_key_2026');
+const JWT_SECRET = process.env.JWT_SECRET || 'crackers_web_secret_key_2026_default';
 const TOKEN_EXPIRY = '24h';
 const COOKIE_NAME = 'admin_token';
 
@@ -21,7 +21,6 @@ export function verifyPassword(password: string, hash: string): Promise<boolean>
 }
 
 export function signToken(payload: AdminPayload): string {
-  if (!JWT_SECRET) throw new Error('JWT_SECRET must be configured in production');
   return jwt.sign(payload, JWT_SECRET, { expiresIn: TOKEN_EXPIRY });
 }
 
