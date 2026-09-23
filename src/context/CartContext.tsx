@@ -8,6 +8,7 @@ interface CartContextType {
   addToCart: (product: Product, quantity?: number, sourcePackage?: { id: number; name: string }) => void;
   addPackageToCart: (pkg: Package, customizedItems?: { product: Product; quantity: number }[]) => void;
   updateQuantity: (cartItemId: string, quantity: number) => void;
+  setProductQuantity: (product: Product, quantity: number) => void;
   removeFromCart: (cartItemId: string) => void;
   clearCart: () => void;
   totalAmount: number;
@@ -34,7 +35,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } catch (e) {
       console.error('Failed to load cart from localStorage:', e);
     }
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsLoaded(true);
   }, []);
 
@@ -132,6 +132,41 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     );
   };
 
+  const setProductQuantity = (product: Product, quantity: number) => {
+    const cartItemId = `prod-${product.id}`;
+    if (quantity <= 0) {
+      removeFromCart(cartItemId);
+      return;
+    }
+
+    setItems((prev) => {
+      const existingIndex = prev.findIndex((item) => item.cartItemId === cartItemId);
+      const safeQty = Math.min(quantity, product.stockQty);
+
+      if (existingIndex > -1) {
+        const updated = [...prev];
+        updated[existingIndex] = {
+          ...updated[existingIndex],
+          quantity: safeQty,
+        };
+        return updated;
+      }
+
+      return [
+        ...prev,
+        {
+          cartItemId,
+          productId: product.id,
+          product,
+          quantity: safeQty,
+          unitPrice: product.price,
+          sourcePackageId: null,
+          sourcePackageName: null,
+        },
+      ];
+    });
+  };
+
   const removeFromCart = (cartItemId: string) => {
     setItems((prev) => prev.filter((item) => item.cartItemId !== cartItemId));
   };
@@ -150,6 +185,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         addToCart,
         addPackageToCart,
         updateQuantity,
+        setProductQuantity,
         removeFromCart,
         clearCart,
         totalAmount,

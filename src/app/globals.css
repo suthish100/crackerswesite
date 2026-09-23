@@ -1,8 +1,103 @@
 @import "tailwindcss";
 
+:root {
+  --background: #FAF8F5;
+  --surface: #FFFFFF;
+  --card: #FFFFFF;
+  --text: #0F172A;
+  --muted: #64748B;
+  --gold: #D97706;
+  --gold-bright: #F59E0B;
+  --gold-light: #FEF3C7;
+  --crimson: #E11D48;
+}
+
+@theme {
+  --color-royal-navy: #0F172A;
+  --color-royal-surface: #FFFFFF;
+  --color-royal-card: #FFFFFF;
+  --color-royal-purple: #7C3AED;
+  --color-royal-gold: #D97706;
+  --color-royal-gold-bright: #F59E0B;
+  --color-royal-gold-light: #FEF3C7;
+}
+
 @layer base {
+  * {
+    border-color: rgba(226, 232, 240, 0.8);
+  }
   body {
-    background-color: #020617;
-    color: #f8fafc;
+    background-color: var(--background);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+}
+
+/* Glassmorphism & Atmospheric utilities for Light Theme */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+  box-shadow: 0 4px 20px -2px rgba(245, 158, 11, 0.08);
+}
+
+.glass-card {
+  background: #FFFFFF;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 4px 16px -3px rgba(0, 0, 0, 0.05);
+}
+
+.glass-input {
+  background: #FFFFFF;
+  border: 1px solid rgba(203, 213, 225, 0.9);
+  color: #0F172A;
+}
+
+.glass-input:focus {
+  border-color: #F59E0B;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.2);
+}
+
+.gold-gradient {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 60%, #B45309 100%);
+}
+
+.gold-glow {
+  box-shadow: 0 4px 20px -2px rgba(217, 119, 6, 0.25);
+}
+
+.festive-hero-bg {
+  background: radial-gradient(circle at top right, rgba(251, 191, 36, 0.15), transparent 45%),
+              radial-gradient(circle at top left, rgba(225, 29, 72, 0.08), transparent 40%),
+              linear-gradient(135deg, #FFFDF9 0%, #FFF7ED 50%, #FAF8F5 100%);
+}
+
+/* Subtle float animation for crackers */
+@keyframes festive-float {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(1deg);
+  }
+}
+
+.animate-festive-float {
+  animation: festive-float 5s ease-in-out infinite;
+}
+
+/* Smooth reduced motion adjustments */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .animate-festive-float {
+    animation: none !important;
   }
 }

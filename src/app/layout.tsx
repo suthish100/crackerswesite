@@ -17,8 +17,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark scroll-smooth" data-scroll-behavior="smooth">
-      <body className={`${inter.className} bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-amber-500 selection:text-slate-950`}>
+    <html lang="en" className="scroll-smooth" data-scroll-behavior="smooth">
+      <body className={`${inter.className} bg-[#FAF8F5] text-slate-900 min-h-screen flex flex-col antialiased selection:bg-amber-500 selection:text-white`}>
         <CartProvider>
           <StorefrontShell>{children}</StorefrontShell>
         </CartProvider>

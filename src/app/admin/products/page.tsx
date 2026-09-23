@@ -33,6 +33,8 @@ export default function AdminProductsPage() {
   const [price, setPrice] = useState('');
   const [stockQty, setStockQty] = useState('');
   const [description, setDescription] = useState('');
+  const [imageUrl, setImageUrl] = useState('');
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [isActive, setIsActive] = useState(true);
 
   // Bulk Upload Modal state
@@ -92,6 +94,7 @@ export default function AdminProductsPage() {
     setPrice('');
     setStockQty('');
     setDescription('');
+    setImageUrl('');
     setIsActive(true);
     setIsModalOpen(true);
   };
@@ -105,8 +108,37 @@ export default function AdminProductsPage() {
     setPrice(String(p.price));
     setStockQty(String(p.stockQty));
     setDescription(p.description || '');
+    setImageUrl(p.imageUrl && p.imageUrl !== '/uploads/placeholder.png' ? p.imageUrl : '');
     setIsActive(p.isActive);
     setIsModalOpen(true);
+  };
+
+  const handleImageFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadingImage(true);
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const res = await fetch('/api/admin/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await res.json();
+      if (data.success && data.url) {
+        setImageUrl(data.url);
+      } else {
+        alert(data.message || 'Image upload failed');
+      }
+    } catch (err) {
+      console.error('Image upload error:', err);
+      alert('Network error while uploading image');
+    } finally {
+      setUploadingImage(false);
+    }
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -121,6 +153,7 @@ export default function AdminProductsPage() {
       price: Number(price),
       stockQty: Number(stockQty || 0),
       description: description || undefined,
+      imageUrl: imageUrl || '/uploads/placeholder.png',
       isActive,
     };
 
@@ -304,6 +337,7 @@ export default function AdminProductsPage() {
                     className="h-4 w-4 rounded border-slate-700 bg-slate-950 accent-amber-500"
                   />
                 </th>
+                <th className="p-4 w-16">Image</th>
                 <th className="p-4">Name & SKU</th>
                 <th className="p-4">Category</th>
                 <th className="p-4">Price</th>
@@ -315,7 +349,7 @@ export default function AdminProductsPage() {
             <tbody className="divide-y divide-slate-800 text-slate-300">
               {Object.entries(productsByCategory).sort(([a], [b]) => a.localeCompare(b)).flatMap(([categoryName, categoryProducts]) => [
                 <tr key={`category-${categoryName}`} className="bg-slate-800/80">
-                  <td colSpan={7} className="px-4 py-3 text-sm font-black uppercase tracking-wide text-amber-300">{categoryName}<span className="ml-2 text-[10px] font-normal text-slate-400">{categoryProducts.length} products</span></td>
+                  <td colSpan={8} className="px-4 py-3 text-sm font-black uppercase tracking-wide text-amber-300">{categoryName}<span className="ml-2 text-[10px] font-normal text-slate-400">{categoryProducts.length} products</span></td>
                 </tr>,
                 ...categoryProducts.map((p) => <tr key={p.id} className="hover:bg-slate-950/40">
                   <td className="p-4">
@@ -326,6 +360,20 @@ export default function AdminProductsPage() {
                       onChange={() => toggleProductSelection(p.id)}
                       className="h-4 w-4 rounded border-slate-700 bg-slate-950 accent-amber-500"
                     />
+                  </td>
+                  <td className="p-4">
+                    {p.imageUrl && p.imageUrl !== '/uploads/placeholder.png' ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={p.imageUrl}
+                        alt={p.name}
+                        className="w-10 h-10 object-cover rounded-lg border border-slate-700 bg-slate-950 shadow-sm"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-center text-lg">
+                        🧨
+                      </div>
+                    )}
                   </td>
                   <td className="p-4">
                     <div className="font-bold text-white text-sm">{p.name}</div>
@@ -471,6 +519,64 @@ export default function AdminProductsPage() {
                   onChange={(e) => setDescription(e.target.value)}
                   className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white"
                 />
+              </div>
+
+              {/* Cracker Image Upload & Preview */}
+              <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-4 space-y-3">
+                <label className="block font-bold text-amber-400 text-xs uppercase tracking-wider">
+                  Cracker Product Image 📸
+                </label>
+
+                <div className="flex items-start gap-4">
+                  {/* Thumbnail Preview */}
+                  <div className="w-20 h-20 rounded-xl border border-slate-700 bg-slate-900 flex items-center justify-center overflow-hidden shrink-0 shadow-inner">
+                    {imageUrl ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={imageUrl}
+                        alt="Cracker Preview"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <span className="text-3xl">🧨</span>
+                    )}
+                  </div>
+
+                  {/* Upload Actions & URL input */}
+                  <div className="flex-1 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 text-xs font-bold border border-amber-500/30 transition-colors">
+                        <span>{uploadingImage ? '⏳ Uploading...' : '📁 Upload Image File'}</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageFileChange}
+                          disabled={uploadingImage}
+                          className="hidden"
+                        />
+                      </label>
+                      {imageUrl && (
+                        <button
+                          type="button"
+                          onClick={() => setImageUrl('')}
+                          className="px-2.5 py-1.5 rounded-lg text-xs font-bold text-rose-400 hover:bg-rose-500/10 border border-rose-500/20 transition-colors"
+                        >
+                          Clear
+                        </button>
+                      )}
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Or enter image URL (e.g. /uploads/... or https://...)"
+                      value={imageUrl}
+                      onChange={(e) => setImageUrl(e.target.value)}
+                      className="w-full bg-slate-950 border border-slate-800 rounded-lg px-2.5 py-1.5 text-xs text-slate-300 placeholder:text-slate-600 focus:border-amber-500"
+                    />
+                    <p className="text-[10px] text-slate-500">
+                      Upload from computer (JPG, PNG, WEBP) or paste an image link.
+                    </p>
+                  </div>
+                </div>
               </div>
 
               <div className="flex items-center gap-2 pt-2">

@@ -34,22 +34,24 @@ export default async function PackagesPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-8">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
       {/* Header */}
       <div>
-        <span className="text-xs font-bold uppercase tracking-widest text-amber-400">Curated Combos</span>
-        <h1 className="text-3xl font-black text-white mt-1">Ready-Made Festival Packages</h1>
-        <p className="text-slate-400 text-sm mt-1">
-          Pick a pre-packed assortment for family celebrations, or click <span className="text-amber-400 font-bold">Customize</span> to modify items and quantities to your liking!
+        <span className="text-xs font-black uppercase tracking-[0.2em] text-amber-800 bg-amber-100 border border-amber-300 px-3.5 py-1 rounded-full inline-block mb-3 shadow-sm">
+          Curated Combos
+        </span>
+        <h1 className="text-3xl sm:text-4xl font-black text-slate-900">Ready-Made Festival Packages</h1>
+        <p className="text-slate-600 text-sm mt-2 max-w-xl">
+          Pick a pre-packed assortment for your family celebrations, or click <span className="text-amber-800 font-bold">Customize</span> to modify items and quantities to your liking!
         </p>
       </div>
 
       {/* Grid */}
       {packages.length === 0 ? (
-        <div className="text-center py-20 bg-slate-900/40 rounded-3xl border border-slate-800">
-          <span className="text-5xl block mb-3">🎁</span>
-          <h3 className="text-lg font-bold text-white">No active packages currently available</h3>
-          <p className="text-slate-400 text-xs mt-1">Please check back soon or build your own custom basket from our catalog!</p>
+        <div className="text-center py-20 bg-white rounded-3xl border border-slate-200 shadow-sm">
+          <span className="text-5xl block mb-3 animate-festive-float">🎁</span>
+          <h3 className="text-lg font-bold text-slate-900">No active packages currently available</h3>
+          <p className="text-slate-500 text-xs mt-1">Please check back soon or build your own custom basket from our catalog!</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
