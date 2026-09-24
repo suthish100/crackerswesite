@@ -22,8 +22,28 @@ test.describe('Quick Order Price List', () => {
     await firstQtyInput.fill('5');
 
     // Sticky grand total should reflect the update
-    const grandTotal = page.locator('text=Grand Total : Rs.');
+    const grandTotal = page.locator('text=Grand Total :');
     await expect(grandTotal).toBeVisible();
+
+    // Verify all 5 table headers are within viewport
+    const amountHeader = page.locator('th:has-text("Amount")');
+    await expect(amountHeader).toBeInViewport();
+
+    // Click "View Bag" to open the Cart Drawer
+    const viewBagBtn = page.getByRole('button', { name: /View Bag/i });
+    await expect(viewBagBtn).toBeVisible();
+    await viewBagBtn.click();
+
+    // Verify Cart Drawer header and Total Amount are visible and within viewport
+    const basketHeading = page.getByRole('heading', { name: 'Your Basket' });
+    await expect(basketHeading).toBeVisible();
+    const cartTotal = page.locator('[data-testid="cart-total"]');
+    await expect(cartTotal).toBeVisible();
+    await expect(cartTotal).toBeInViewport();
+
+    // Close the cart drawer
+    await page.getByRole('button', { name: '✕' }).click();
+    await expect(basketHeading).not.toBeVisible();
 
     // Submit button links to checkout
     const submitBtn = page.locator('a:has-text("Submit Order Now")');

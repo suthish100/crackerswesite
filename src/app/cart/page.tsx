@@ -33,43 +33,48 @@ export default function CartPage() {
           {items.map((item) => (
             <div
               key={item.cartItemId}
-              className="flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm hover:border-amber-300 transition-colors"
+              className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4 rounded-2xl border border-slate-200 bg-white p-3.5 sm:p-4 shadow-sm hover:border-amber-300 transition-colors"
             >
-              <div className="w-12 h-12 rounded-xl bg-amber-100/70 flex items-center justify-center text-2xl flex-shrink-0 border border-amber-200">
-                🧨
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <div className="w-12 h-12 rounded-xl bg-amber-100/70 flex items-center justify-center text-2xl flex-shrink-0 border border-amber-200">
+                  🧨
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h2 className="font-bold text-slate-900 text-sm sm:text-base truncate">{item.product.name}</h2>
+                  <p className="mt-0.5 text-xs text-amber-700 font-semibold">{formatPrice(item.unitPrice)} each</p>
+                </div>
               </div>
-              <div className="flex-1 min-w-0">
-                <h2 className="font-bold text-slate-900 text-sm sm:text-base truncate">{item.product.name}</h2>
-                <p className="mt-0.5 text-xs text-amber-700 font-semibold">{formatPrice(item.unitPrice)} each</p>
-              </div>
-              <div className="flex items-center gap-2">
+
+              <div className="flex items-center justify-between sm:justify-end gap-3 sm:gap-5 pt-2 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => updateQuantity(item.cartItemId, item.quantity - 1)}
+                    className="h-7 w-7 sm:h-8 sm:w-8 rounded-lg bg-slate-50 border border-slate-300 text-slate-700 font-bold flex items-center justify-center hover:bg-slate-100 text-xs transition-colors"
+                  >
+                    -
+                  </button>
+                  <span className="w-6 text-center text-sm font-bold text-slate-900">{item.quantity}</span>
+                  <button
+                    type="button"
+                    data-testid="qty-increase"
+                    onClick={() => updateQuantity(item.cartItemId, item.quantity + 1)}
+                    className="h-7 w-7 sm:h-8 sm:w-8 rounded-lg bg-slate-50 border border-slate-300 text-slate-700 font-bold flex items-center justify-center hover:bg-slate-100 text-xs transition-colors"
+                  >
+                    +
+                  </button>
+                </div>
+                <span className="text-right text-sm font-black text-amber-700 font-mono">
+                  {formatPrice(item.unitPrice * item.quantity)}
+                </span>
                 <button
                   type="button"
-                  onClick={() => updateQuantity(item.cartItemId, item.quantity - 1)}
-                  className="h-8 w-8 rounded-lg bg-slate-50 border border-slate-300 text-slate-700 font-bold flex items-center justify-center hover:bg-slate-100 text-xs transition-colors"
+                  onClick={() => removeFromCart(item.cartItemId)}
+                  className="text-xs text-rose-500 hover:text-rose-700 font-medium transition-colors"
                 >
-                  -
-                </button>
-                <span className="w-6 text-center text-sm font-bold text-slate-900">{item.quantity}</span>
-                <button
-                  type="button"
-                  data-testid="qty-increase"
-                  onClick={() => updateQuantity(item.cartItemId, item.quantity + 1)}
-                  className="h-8 w-8 rounded-lg bg-slate-50 border border-slate-300 text-slate-700 font-bold flex items-center justify-center hover:bg-slate-100 text-xs transition-colors"
-                >
-                  +
+                  Remove
                 </button>
               </div>
-              <span className="w-24 text-right text-sm font-black text-amber-700">
-                {formatPrice(item.unitPrice * item.quantity)}
-              </span>
-              <button
-                type="button"
-                onClick={() => removeFromCart(item.cartItemId)}
-                className="text-xs text-rose-500 hover:text-rose-700 font-medium transition-colors"
-              >
-                Remove
-              </button>
             </div>
           ))}
 

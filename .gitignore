@@ -40,3 +40,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .neon
+
+# scratch & local artifacts
+/scratch/
+*.mp4
+/playwright-report/
+/test-results/
+

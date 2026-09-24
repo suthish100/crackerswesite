@@ -95,7 +95,7 @@ export const QuickOrderTable: React.FC<QuickOrderTableProps> = ({
   const tnRemaining = Math.max(0, MIN_ORDER_TN - totalAmount);
 
   return (
-    <div className="space-y-6 pb-28">
+    <div className="space-y-6 pb-36 sm:pb-28">
       {/* Minimum Order Banner (Matching reference video) */}
       <div className="rounded-2xl border border-amber-300/80 bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 p-4 text-white shadow-md">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
@@ -174,13 +174,13 @@ export const QuickOrderTable: React.FC<QuickOrderTableProps> = ({
         </div>
       </div>
 
-      {/* Mobile Swipe Hint */}
+      {/* Mobile Hint */}
       <div className="sm:hidden flex items-center justify-between text-[11px] font-bold text-amber-900 bg-amber-50 px-3 py-1.5 rounded-xl border border-amber-200">
         <span className="flex items-center gap-1.5">
-          <span>👉</span>
-          <span>Swipe table horizontally for Qty & Amount</span>
+          <span>⚡</span>
+          <span>Wholesale Price Sheet • Live Amount Calc</span>
         </span>
-        <span className="text-[10px] bg-amber-200 text-amber-950 px-1.5 py-0.5 rounded-md">Live Calc</span>
+        <span className="text-[10px] bg-amber-200 text-amber-950 px-1.5 py-0.5 rounded-md">80% OFF</span>
       </div>
 
       {/* Quick Order Table */}
@@ -188,13 +188,13 @@ export const QuickOrderTable: React.FC<QuickOrderTableProps> = ({
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             {/* Header Columns */}
-            <thead className="bg-amber-400 text-slate-950 uppercase text-[10px] sm:text-[11px] font-black tracking-wider border-b border-amber-500 sticky top-0 z-20">
+            <thead className="bg-amber-400 text-slate-950 uppercase text-[9px] sm:text-[11px] font-black tracking-wider border-b border-amber-500 sticky top-0 z-20">
               <tr>
-                <th className="py-2.5 sm:py-3 px-2 sm:px-4 text-center w-12 sm:w-20">Image</th>
-                <th className="py-2.5 sm:py-3 px-2 sm:px-4 min-w-[130px] sm:min-w-[180px]">Products</th>
-                <th className="py-2.5 sm:py-3 px-2 sm:px-4 text-right sm:text-center w-20 sm:w-32">Price</th>
-                <th className="py-2.5 sm:py-3 px-1.5 sm:px-4 text-center w-24 sm:w-36">Qty</th>
-                <th className="py-2.5 sm:py-3 px-2 sm:px-4 text-right w-20 sm:w-32">Amount</th>
+                <th className="py-2 sm:py-3 px-1 sm:px-4 text-center w-10 sm:w-20">Image</th>
+                <th className="py-2 sm:py-3 px-1.5 sm:px-4 min-w-[90px] sm:min-w-[180px]">Products</th>
+                <th className="py-2 sm:py-3 px-1 sm:px-4 text-right sm:text-center w-14 sm:w-32">Price</th>
+                <th className="py-2 sm:py-3 px-1 sm:px-4 text-center w-20 sm:w-36">Qty</th>
+                <th className="py-2 sm:py-3 px-1.5 sm:px-4 text-right w-16 sm:w-32">Amount</th>
               </tr>
             </thead>
 
@@ -210,12 +210,12 @@ export const QuickOrderTable: React.FC<QuickOrderTableProps> = ({
                   <React.Fragment key={category.id}>
                     {/* Category Banner Row (Matching the reference video's purple/amber banner) */}
                     <tr className="bg-gradient-to-r from-purple-800 via-purple-700 to-indigo-900 text-white font-black text-xs sm:text-sm uppercase tracking-wide">
-                      <td colSpan={5} className="py-2.5 px-4">
+                      <td colSpan={5} className="py-2.5 px-3 sm:px-4">
                         <div className="flex items-center justify-between">
                           <span>
-                            ✦ {category.name} <span className="text-[11px] font-bold text-purple-200 ml-1">(80% DISCOUNT)</span>
+                            ✦ {category.name} <span className="text-[10px] sm:text-[11px] font-bold text-purple-200 ml-1">(80% DISCOUNT)</span>
                           </span>
-                          <span className="text-[11px] font-semibold text-purple-200 normal-case">
+                          <span className="text-[10px] sm:text-[11px] font-semibold text-purple-200 normal-case">
                             {catProducts.length} items
                           </span>
                         </div>
@@ -239,14 +239,14 @@ export const QuickOrderTable: React.FC<QuickOrderTableProps> = ({
                           } hover:bg-amber-50/80`}
                         >
                           {/* Image Column */}
-                          <td className="py-2 px-1.5 sm:px-4 text-center">
+                          <td className="py-1.5 sm:py-2 px-1 sm:px-4 text-center">
                             <div
                               onClick={() => {
                                 if (p.imageUrl && p.imageUrl !== '/uploads/placeholder.png') {
                                   setPreviewImage({ src: p.imageUrl, name: p.name });
                                 }
                               }}
-                              className="w-10 h-10 sm:w-14 sm:h-14 mx-auto rounded-xl border border-slate-200 bg-white flex items-center justify-center overflow-hidden cursor-pointer hover:border-amber-400 transition-colors shadow-xs"
+                              className="w-8 h-8 sm:w-14 sm:h-14 mx-auto rounded-lg sm:rounded-xl border border-slate-200 bg-white flex items-center justify-center overflow-hidden cursor-pointer hover:border-amber-400 transition-colors shadow-2xs"
                             >
                               {p.imageUrl && p.imageUrl !== '/uploads/placeholder.png' ? (
                                 // eslint-disable-next-line @next/next/no-img-element
@@ -256,43 +256,43 @@ export const QuickOrderTable: React.FC<QuickOrderTableProps> = ({
                                   className="w-full h-full object-cover"
                                 />
                               ) : (
-                                <span className="text-xl sm:text-2xl">🧨</span>
+                                <span className="text-base sm:text-2xl">🧨</span>
                               )}
                             </div>
                           </td>
 
                           {/* Product Details Column */}
-                          <td className="py-2 px-2 sm:px-4">
-                            <div className="font-bold text-slate-900 text-xs sm:text-sm leading-tight line-clamp-2">
+                          <td className="py-1.5 sm:py-2 px-1.5 sm:px-4">
+                            <div className="font-bold text-slate-900 text-[11px] sm:text-sm leading-snug line-clamp-2">
                               {p.name}
                             </div>
-                            <div className="text-[10px] sm:text-[11px] font-semibold text-rose-600 mt-0.5 line-clamp-1">
+                            <div className="text-[9px] sm:text-[11px] font-semibold text-rose-600 mt-0.5 line-clamp-1">
                               {p.description || '1 pkt (5 pcs)'}
                             </div>
                             {p.sku && (
-                              <div className="text-[9px] sm:text-[10px] font-mono text-slate-400">
+                              <div className="text-[8px] sm:text-[10px] font-mono text-slate-400 hidden sm:block">
                                 SKU: {p.sku}
                               </div>
                             )}
                           </td>
 
                           {/* Price Column */}
-                          <td className="py-2 px-1.5 sm:px-4 text-right sm:text-center">
-                            <div className="text-[10px] sm:text-xs text-rose-500 font-semibold line-through">
+                          <td className="py-1.5 sm:py-2 px-1 sm:px-4 text-right sm:text-center whitespace-nowrap">
+                            <div className="text-[9px] sm:text-xs text-rose-500 font-semibold line-through">
                               {formatPrice(effectiveOriginalPrice)}
                             </div>
-                            <div className="text-xs sm:text-base font-black text-emerald-700">
+                            <div className="text-[11px] sm:text-base font-black text-emerald-700 font-mono">
                               {formatPrice(p.price)}
                             </div>
                           </td>
 
                           {/* Qty Input Column */}
-                          <td className="py-2 px-1 sm:px-4 text-center">
-                            <div className="inline-flex items-center border border-slate-300 rounded-lg sm:rounded-xl bg-white shadow-xs overflow-hidden">
+                          <td className="py-1.5 sm:py-2 px-1 sm:px-4 text-center whitespace-nowrap">
+                            <div className="inline-flex items-center border border-slate-300 rounded-lg bg-white shadow-2xs overflow-hidden">
                               <button
                                 type="button"
                                 onClick={() => handleStep(p, -1)}
-                                className="px-1.5 sm:px-2.5 py-1 text-xs font-black text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+                                className="w-5 sm:w-7 py-0.5 sm:py-1 text-xs font-black text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
                                 aria-label={`Decrease ${p.name}`}
                               >
                                 -
@@ -304,12 +304,12 @@ export const QuickOrderTable: React.FC<QuickOrderTableProps> = ({
                                 value={qty === 0 ? '' : qty}
                                 placeholder="0"
                                 onChange={(e) => handleQtyChange(p, e.target.value)}
-                                className="w-9 sm:w-14 py-0.5 text-center font-black text-xs sm:text-sm text-slate-900 focus:outline-none focus:bg-amber-50"
+                                className="w-7 sm:w-12 py-0.5 text-center font-black text-[11px] sm:text-sm text-slate-900 focus:outline-none focus:bg-amber-50"
                               />
                               <button
                                 type="button"
                                 onClick={() => handleStep(p, 1)}
-                                className="px-1.5 sm:px-2.5 py-1 text-xs font-black text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
+                                className="w-5 sm:w-7 py-0.5 sm:py-1 text-xs font-black text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors"
                                 aria-label={`Increase ${p.name}`}
                               >
                                 +
@@ -318,10 +318,10 @@ export const QuickOrderTable: React.FC<QuickOrderTableProps> = ({
                           </td>
 
                           {/* Amount Column */}
-                          <td className="py-2 px-1.5 sm:px-4 text-right">
+                          <td className="py-1.5 sm:py-2 px-1.5 sm:px-4 text-right whitespace-nowrap">
                             <span
-                              className={`text-xs sm:text-sm font-black ${
-                                lineAmount > 0 ? 'text-slate-900 font-mono' : 'text-slate-400'
+                              className={`text-[11px] sm:text-sm font-black ${
+                                lineAmount > 0 ? 'text-slate-900 font-mono' : 'text-slate-300'
                               }`}
                             >
                               {formatPrice(lineAmount)}
@@ -339,21 +339,21 @@ export const QuickOrderTable: React.FC<QuickOrderTableProps> = ({
       </div>
 
       {/* Sticky Bottom Order Summary Bar (Matching reference video's yellow footer bar) */}
-      <div className="fixed bottom-0 inset-x-0 z-40 bg-amber-400 border-t border-amber-500 shadow-2xl py-3 px-4 sm:px-6">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+      <div className="fixed bottom-0 inset-x-0 z-40 bg-amber-400 border-t border-amber-500 shadow-2xl py-2.5 sm:py-3 px-3.5 sm:px-6">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2 sm:gap-3">
           {/* Total display */}
-          <div className="flex items-center gap-3 sm:gap-6 text-center sm:text-left">
-            <div>
+          <div className="flex items-center justify-between w-full sm:w-auto gap-3 sm:gap-6">
+            <div className="text-left">
               <div className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-amber-900">
                 Live Order Summary
               </div>
-              <div className="text-lg sm:text-2xl font-black text-slate-950 font-mono">
-                Grand Total : Rs. {formatPrice(totalAmount)}
+              <div className="text-base sm:text-2xl font-black text-slate-950 font-mono">
+                Grand Total : {formatPrice(totalAmount)}
               </div>
             </div>
             {totalItemCount > 0 && (
-              <div className="hidden md:block pl-4 border-l border-amber-500/60 text-xs font-bold text-amber-950">
-                <span>📦 {totalItemCount} Items Added</span>
+              <div className="text-xs font-bold text-amber-950 bg-amber-500/40 px-2 py-1 rounded-lg">
+                <span>📦 {totalItemCount} Items</span>
               </div>
             )}
           </div>
@@ -363,13 +363,13 @@ export const QuickOrderTable: React.FC<QuickOrderTableProps> = ({
             <button
               type="button"
               onClick={() => setIsOpen(true)}
-              className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl border border-amber-600 bg-white/90 hover:bg-white text-slate-900 font-bold text-xs sm:text-sm shadow-xs transition-all"
+              className="flex-1 sm:flex-none px-3.5 sm:px-4 py-2.5 rounded-xl border border-amber-600 bg-white/95 hover:bg-white text-slate-900 font-bold text-xs sm:text-sm shadow-xs transition-all active:scale-95"
             >
               View Bag ({totalItemCount})
             </button>
             <Link
               href="/checkout"
-              className="flex-1 sm:flex-none px-6 py-2.5 rounded-xl bg-purple-900 hover:bg-purple-950 text-white font-black text-xs sm:text-sm shadow-lg shadow-purple-950/20 text-center transition-all hover:scale-105 active:scale-95"
+              className="flex-1 sm:flex-none px-5 sm:px-6 py-2.5 rounded-xl bg-purple-900 hover:bg-purple-950 text-white font-black text-xs sm:text-sm shadow-lg shadow-purple-950/20 text-center transition-all hover:scale-105 active:scale-95"
             >
               Submit Order Now ➔
             </Link>

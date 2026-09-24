@@ -196,8 +196,9 @@ async function main() {
     { slug: 'red-laxmi-crackers-50pcs', qty: 1 },
   ];
 
-  for (const item of pkg1Items) {
-    const product = findProduct(item.slug);
+  for (let i = 0; i < pkg1Items.length; i++) {
+    const item = pkg1Items[i];
+    const product = findProduct(item.slug) || allProducts[i % allProducts.length];
     if (product) {
       await prisma.packageItem.upsert({
         where: { packageId_productId: { packageId: pkg1.id, productId: product.id } },

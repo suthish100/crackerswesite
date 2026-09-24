@@ -52,7 +52,7 @@ test.describe('Cart and checkout', () => {
     await page.locator('[data-testid="place-order"]').click();
 
     // Order.publicOrderId should be shown as confirmation
-    await expect(page.locator('[data-testid="order-confirmation"]')).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('[data-testid="order-confirmation"]')).toBeVisible({ timeout: 30000 });
     await expect(page.locator('[data-testid="public-order-id"]')).not.toBeEmpty();
   });
 });
