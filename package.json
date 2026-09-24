@@ -11,7 +11,8 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate deploy",
     "db:push": "prisma db push",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "db:sync-images": "tsx scripts/migrate-and-update-images.ts"
   },
   "dependencies": {
     "@neon/config": "^1.5.0",

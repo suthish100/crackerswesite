@@ -17,6 +17,14 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      {
+        source: '/crackers_imgs/:path*',
+        destination: '/images/products/:path*',
+      },
+    ];
+  },
 };
 
 export default nextConfig;
