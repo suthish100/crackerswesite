@@ -78,9 +78,16 @@ export class DefaultEmbeddingService implements EmbeddingService {
   async generateEmbedding(text: string): Promise<number[]> {
     const config = getAiConfig();
 
-    if (config.embeddingProvider === 'openai' && config.aiApiKey) {
+    if (
+      (config.embeddingProvider === 'openai' || config.embeddingProvider === 'gemini') &&
+      config.aiApiKey
+    ) {
       try {
-        const baseUrl = config.aiBaseUrl || 'https://api.openai.com/v1';
+        const baseUrl =
+          config.aiBaseUrl ||
+          (config.embeddingProvider === 'gemini'
+            ? 'https://generativelanguage.googleapis.com/v1beta/openai'
+            : 'https://api.openai.com/v1');
         const res = await fetch(`${baseUrl}/embeddings`, {
           method: 'POST',
           headers: {
@@ -88,7 +95,9 @@ export class DefaultEmbeddingService implements EmbeddingService {
             Authorization: `Bearer ${config.aiApiKey}`,
           },
           body: JSON.stringify({
-            model: config.embeddingModel || 'text-embedding-3-small',
+            model:
+              config.embeddingModel ||
+              (config.embeddingProvider === 'gemini' ? 'text-embedding-004' : 'text-embedding-3-small'),
             input: text.slice(0, 8000),
           }),
         });

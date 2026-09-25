@@ -16,7 +16,11 @@ export default async function HomePage() {
   let allProducts: Awaited<ReturnType<typeof prisma.product.findMany>> = [];
   const fetchStorefrontData = () =>
     Promise.all([
-      prisma.category.findMany({ where: { isActive: true }, take: 8 }),
+      prisma.category.findMany({
+        where: { isActive: true },
+        orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }],
+        take: 8,
+      }),
       prisma.package.findMany({
         where: { isActive: true },
         take: 4,

@@ -72,9 +72,16 @@ export class AiShoppingAssistantService {
     let aiAnswer = '';
 
     // 5. LLM Call or Intelligent Local Fallback Engine
-    if (config.aiApiKey && (config.aiProvider === 'openai' || config.aiProvider === 'local')) {
+    if (
+      config.aiApiKey &&
+      (config.aiProvider === 'openai' || config.aiProvider === 'gemini' || config.aiProvider === 'local')
+    ) {
       try {
-        const baseUrl = config.aiBaseUrl || 'https://api.openai.com/v1';
+        const baseUrl =
+          config.aiBaseUrl ||
+          (config.aiProvider === 'gemini'
+            ? 'https://generativelanguage.googleapis.com/v1beta/openai'
+            : 'https://api.openai.com/v1');
         const formattedHistory = history.slice(-6).map((h) => ({
           role: h.role,
           content: h.content,
@@ -87,7 +94,7 @@ export class AiShoppingAssistantService {
             Authorization: `Bearer ${config.aiApiKey}`,
           },
           body: JSON.stringify({
-            model: config.aiModel || 'gpt-4o-mini',
+            model: config.aiModel || (config.aiProvider === 'gemini' ? 'gemini-1.5-flash' : 'gpt-4o-mini'),
             messages: [
               { role: 'system', content: SYSTEM_PROMPT },
               ...formattedHistory,
@@ -148,7 +155,7 @@ export class AiShoppingAssistantService {
     // Budget intent
     if (parsedQuery.targetBudget && recommendedProducts.length > 0) {
       const itemsList = recommendedProducts
-        .map((p) => `• **${p.name}** (${p.categoryName || 'Cracker'}) — **₹${p.price}** (80% OFF MRP ₹${p.originalPrice})`)
+        .map((p) => `• **${p.name}** (${p.categoryName || 'Cracker'}) — **₹${p.price}** (70% DISCOUNT MRP ₹${p.originalPrice})`)
         .join('\n');
 
       return `🎆 **Custom Festive Package for ₹${parsedQuery.targetBudget.toLocaleString('en-IN')} Budget**\n\n${budgetSummary}\n\nHere are the recommended items from our live factory catalog:\n\n${itemsList}\n\n👉 You can review each product card below and click **"+ Add to Cart"** to add them directly to your order bag!`;

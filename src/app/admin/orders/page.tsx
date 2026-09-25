@@ -145,8 +145,18 @@ export default function AdminOrdersPage() {
         <div className="py-20 text-center text-slate-400 text-sm">Loading orders...</div>
       ) : (
         <div className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-xl">
+          {/* Mobile Swipe Hint */}
+          <div className="md:hidden px-4 py-2 bg-slate-950/70 border-b border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
+            <span className="flex items-center gap-1.5 font-medium">
+              <span>👉</span>
+              <span>Scroll sideways to view all columns & actions</span>
+            </span>
+            <span className="text-[10px] font-mono text-amber-400/80 bg-slate-800/80 px-2 py-0.5 rounded-full">
+              swipe ↔
+            </span>
+          </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="w-full text-left text-xs min-w-[780px]">
               <thead className="bg-slate-950 text-slate-400 uppercase text-[10px] font-bold">
                 <tr>
                   <th className="p-4">Order ID</th>

@@ -6,7 +6,7 @@ import { slugify } from '@/lib/utils';
 export const GET = requireAdmin(async () => {
   try {
     const categories = await prisma.category.findMany({
-      orderBy: { name: 'asc' },
+      orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }],
       include: {
         _count: {
           select: { products: true },
@@ -36,12 +36,19 @@ export const POST = requireAdmin(async (req: Request) => {
       slug = `${baseSlug}-${count++}`;
     }
 
+    const maxCat = await prisma.category.findFirst({
+      orderBy: { sortOrder: 'desc' },
+      select: { sortOrder: true },
+    });
+    const nextSortOrder = (maxCat?.sortOrder ?? -1) + 1;
+
     const category = await prisma.category.create({
       data: {
         name,
         slug,
         description: description || null,
         isActive: isActive !== undefined ? Boolean(isActive) : true,
+        sortOrder: nextSortOrder,
       },
     });
 

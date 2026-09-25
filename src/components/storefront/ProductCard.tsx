@@ -25,10 +25,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const effectiveOriginalPrice =
     product.originalPrice && product.originalPrice > product.price
       ? product.originalPrice
-      : Math.round(product.price * 5); // 80% discount Sivakasi factory standard
-  const discountPercent = Math.round(
-    ((effectiveOriginalPrice - product.price) / effectiveOriginalPrice) * 100
-  );
+      : Math.round(product.price / 0.3); // 70% discount Sivakasi factory standard
 
   return (
     <>
@@ -76,11 +73,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           )}
 
           {/* Discount Badge */}
-          {discountPercent > 0 && (
-            <span className="absolute bottom-2 right-2 px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-black bg-rose-600 text-white shadow-xs tracking-wide">
-              {discountPercent}% OFF
-            </span>
-          )}
+          <span className="absolute bottom-2 right-2 px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-black bg-rose-600 text-white shadow-xs tracking-wide">
+            70% DISCOUNT
+          </span>
 
           {/* Stock Badge */}
           {isOutOfStock ? (
@@ -216,12 +211,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               <h3 className="font-black text-slate-900 text-base">{product.name}</h3>
               <p className="text-xs text-slate-500 mt-0.5">{product.description}</p>
               <div className="mt-2 flex items-center justify-between">
-                <div className="flex items-baseline gap-2">
-                  <span className="text-xs text-rose-500 line-through">
-                    {formatPrice(effectiveOriginalPrice)}
-                  </span>
-                  <span className="text-lg font-black text-emerald-700">
-                    {formatPrice(product.price)}
+                <div className="flex items-center gap-2">
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-xs text-rose-500 line-through">
+                      {formatPrice(effectiveOriginalPrice)}
+                    </span>
+                    <span className="text-lg font-black text-emerald-700">
+                      {formatPrice(product.price)}
+                    </span>
+                  </div>
+                  <span className="text-[10px] font-black text-rose-600 bg-rose-50 px-2 py-0.5 rounded border border-rose-200">
+                    70% DISCOUNT
                   </span>
                 </div>
                 <button

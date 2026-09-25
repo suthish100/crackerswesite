@@ -37,7 +37,7 @@ export function assembleContextPrompt(options: {
     const productListText = options.productsContext
       .map(
         (p) =>
-          `- [ID: ${p.id}] ${p.name} (${p.categoryName || 'Crackers'}): ₹${p.price} (MRP: ₹${p.originalPrice || Math.round(p.price * 5)}, ${p.discountPercent || 80}% OFF) | Stock: ${p.stockQty > 0 ? `${p.stockQty} in stock` : 'Out of stock'}`
+          `- [ID: ${p.id}] ${p.name} (${p.categoryName || 'Crackers'}): ₹${p.price} (MRP: ₹${p.originalPrice || Math.round(p.price / 0.3)}, ${p.discountPercent || 70}% DISCOUNT) | Stock: ${p.stockQty > 0 ? `${p.stockQty} in stock` : 'Out of stock'}`
       )
       .join('\n');
 

@@ -18,7 +18,7 @@ export default async function QuickOrderPage() {
     [categories, products] = await Promise.all([
       prisma.category.findMany({
         where: { isActive: true },
-        orderBy: { name: 'asc' },
+        orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }],
       }),
       prisma.product.findMany({
         where: { isActive: true, category: { isActive: true } },

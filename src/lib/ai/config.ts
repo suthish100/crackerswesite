@@ -24,11 +24,17 @@ export function getAiConfig(): AiConfig {
   const rootDir = process.cwd();
 
   const aiProviderRaw = (process.env.AI_PROVIDER || '').toLowerCase();
-  const apiKey = process.env.AI_API_KEY || process.env.OPENAI_API_KEY || '';
+  const apiKey =
+    process.env.AI_API_KEY ||
+    process.env.GEMINI_API_KEY ||
+    process.env.OPENAI_API_KEY ||
+    '';
 
   let aiProvider: 'openai' | 'gemini' | 'anthropic' | 'local' = 'local';
   if (aiProviderRaw === 'openai' || aiProviderRaw === 'gemini' || aiProviderRaw === 'anthropic') {
     aiProvider = aiProviderRaw;
+  } else if (process.env.GEMINI_API_KEY) {
+    aiProvider = 'gemini';
   } else if (apiKey) {
     aiProvider = 'openai';
   }
@@ -39,6 +45,8 @@ export function getAiConfig(): AiConfig {
     embeddingProvider = embeddingProviderRaw;
   } else if (apiKey && aiProvider === 'openai') {
     embeddingProvider = 'openai';
+  } else if (apiKey && aiProvider === 'gemini') {
+    embeddingProvider = 'gemini';
   }
 
   const ragChunkSize = parseInt(process.env.RAG_CHUNK_SIZE || '800', 10);
@@ -52,7 +60,9 @@ export function getAiConfig(): AiConfig {
     aiBaseUrl: process.env.AI_BASE_URL || undefined,
 
     embeddingProvider,
-    embeddingModel: process.env.EMBEDDING_MODEL || 'text-embedding-3-small',
+    embeddingModel:
+      process.env.EMBEDDING_MODEL ||
+      (embeddingProvider === 'gemini' ? 'text-embedding-004' : 'text-embedding-3-small'),
 
     vectorDatabaseUrl: process.env.VECTOR_DATABASE_URL || undefined,
 

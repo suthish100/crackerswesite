@@ -180,7 +180,7 @@ export const QuickOrderTable: React.FC<QuickOrderTableProps> = ({
           <span>⚡</span>
           <span>Wholesale Price Sheet • Live Amount Calc</span>
         </span>
-        <span className="text-[10px] bg-amber-200 text-amber-950 px-1.5 py-0.5 rounded-md">80% OFF</span>
+        <span className="text-[10px] bg-amber-200 text-amber-950 px-1.5 py-0.5 rounded-md font-bold">70% DISCOUNT</span>
       </div>
 
       {/* Quick Order Table */}
@@ -213,7 +213,7 @@ export const QuickOrderTable: React.FC<QuickOrderTableProps> = ({
                       <td colSpan={5} className="py-2.5 px-3 sm:px-4">
                         <div className="flex items-center justify-between">
                           <span>
-                            ✦ {category.name} <span className="text-[10px] sm:text-[11px] font-bold text-purple-200 ml-1">(80% DISCOUNT)</span>
+                            ✦ {category.name} <span className="text-[10px] sm:text-[11px] font-bold text-purple-200 ml-1">(70% DISCOUNT)</span>
                           </span>
                           <span className="text-[10px] sm:text-[11px] font-semibold text-purple-200 normal-case">
                             {catProducts.length} items
@@ -229,7 +229,7 @@ export const QuickOrderTable: React.FC<QuickOrderTableProps> = ({
                       const effectiveOriginalPrice =
                         p.originalPrice && p.originalPrice > p.price
                           ? p.originalPrice
-                          : Math.round(p.price * 5); // 80% discount baseline
+                          : Math.round(p.price / 0.3); // 70% discount baseline
 
                       return (
                         <tr

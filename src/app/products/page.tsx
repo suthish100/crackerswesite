@@ -23,7 +23,7 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
   try {
     categories = await prisma.category.findMany({
       where: { isActive: true },
-      orderBy: { name: 'asc' },
+      orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }],
     });
   } catch (error) {
     console.error('Unable to load product categories:', error);

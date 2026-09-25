@@ -65,11 +65,9 @@ export const AiProductCard: React.FC<AiProductCardProps> = ({ product }) => {
               {product.categoryName}
             </span>
           )}
-          {product.discountPercent && product.discountPercent > 0 ? (
             <span className="text-[9px] font-black text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded-full">
-              {product.discountPercent}% OFF
+              70% DISCOUNT
             </span>
-          ) : null}
         </div>
 
         <h4 className="font-bold text-xs text-slate-900 truncate mt-0.5" title={product.name}>
