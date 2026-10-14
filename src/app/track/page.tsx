@@ -5,6 +5,7 @@ import { useSearchParams } from 'next/navigation';
 import { motion } from 'motion/react';
 import { Order } from '@/types';
 import { formatPrice, ORDER_STATUSES, STATUS_COLORS, type OrderStatus } from '@/lib/utils';
+import { downloadOrderInvoicePdf, shareOrderInvoicePdf } from '@/lib/invoicePdf';
 
 function TrackOrderContent() {
   const searchParams = useSearchParams();
@@ -126,6 +127,56 @@ function TrackOrderContent() {
                 {order.publicOrderId}
               </h2>
               <p className="text-xs text-slate-500 mt-1">Customer: {order.customerName} ({order.customerPhone})</p>
+              <div className="flex items-center gap-2 mt-3">
+                <button
+                  onClick={() => {
+                    downloadOrderInvoicePdf({
+                      id: order.id,
+                      publicOrderId: order.publicOrderId,
+                      customerName: order.customerName,
+                      customerPhone: order.customerPhone,
+                      customerAddress: order.customerAddress,
+                      customerNote: order.customerNote,
+                      totalAmount: order.totalAmount,
+                      status: order.status,
+                      createdAt: order.createdAt,
+                      items: order.items?.map((it) => ({
+                        name: it.product.name,
+                        quantity: it.quantity,
+                        unitPrice: it.unitPrice,
+                        sourcePackageName: it.sourcePackage?.name,
+                      })) || [],
+                    });
+                  }}
+                  className="px-3.5 py-1.5 rounded-xl border border-amber-500/40 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                >
+                  <span>📄</span> Download Invoice (PDF)
+                </button>
+                <button
+                  onClick={async () => {
+                    await shareOrderInvoicePdf({
+                      id: order.id,
+                      publicOrderId: order.publicOrderId,
+                      customerName: order.customerName,
+                      customerPhone: order.customerPhone,
+                      customerAddress: order.customerAddress,
+                      customerNote: order.customerNote,
+                      totalAmount: order.totalAmount,
+                      status: order.status,
+                      createdAt: order.createdAt,
+                      items: order.items?.map((it) => ({
+                        name: it.product.name,
+                        quantity: it.quantity,
+                        unitPrice: it.unitPrice,
+                        sourcePackageName: it.sourcePackage?.name,
+                      })) || [],
+                    });
+                  }}
+                  className="px-3 py-1.5 rounded-xl border border-slate-300 bg-slate-50 hover:bg-slate-100 text-slate-700 font-bold text-xs flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                >
+                  <span>📤</span> Share (PDF)
+                </button>
+              </div>
             </div>
 
             <div className="text-left sm:text-right">

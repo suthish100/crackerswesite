@@ -150,11 +150,10 @@ export const QuickOrderTable: React.FC<QuickOrderTableProps> = ({
         <div className="flex items-center gap-2 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
           <button
             onClick={() => setSelectedCategorySlug('all')}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-colors ${
-              selectedCategorySlug === 'all'
-                ? 'bg-amber-500 text-slate-950 shadow-sm'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-            }`}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-colors ${selectedCategorySlug === 'all'
+              ? 'bg-amber-500 text-slate-950 shadow-sm'
+              : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+              }`}
           >
             All Items ({products.length})
           </button>
@@ -162,11 +161,10 @@ export const QuickOrderTable: React.FC<QuickOrderTableProps> = ({
             <button
               key={c.id}
               onClick={() => setSelectedCategorySlug(c.slug)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-colors ${
-                selectedCategorySlug === c.slug
-                  ? 'bg-amber-500 text-slate-950 shadow-sm'
-                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-              }`}
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-colors ${selectedCategorySlug === c.slug
+                ? 'bg-amber-500 text-slate-950 shadow-sm'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                }`}
             >
               {c.name}
             </button>
@@ -234,9 +232,8 @@ export const QuickOrderTable: React.FC<QuickOrderTableProps> = ({
                       return (
                         <tr
                           key={p.id}
-                          className={`border-b border-slate-100 transition-colors ${
-                            qty > 0 ? 'bg-amber-50/50' : idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'
-                          } hover:bg-amber-50/80`}
+                          className={`border-b border-slate-100 transition-colors ${qty > 0 ? 'bg-amber-50/50' : idx % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'
+                            } hover:bg-amber-50/80`}
                         >
                           {/* Image Column */}
                           <td className="py-1.5 sm:py-2 px-1 sm:px-4 text-center">
@@ -320,9 +317,8 @@ export const QuickOrderTable: React.FC<QuickOrderTableProps> = ({
                           {/* Amount Column */}
                           <td className="py-1.5 sm:py-2 px-1.5 sm:px-4 text-right whitespace-nowrap">
                             <span
-                              className={`text-[11px] sm:text-sm font-black ${
-                                lineAmount > 0 ? 'text-slate-900 font-mono' : 'text-slate-300'
-                              }`}
+                              className={`text-[11px] sm:text-sm font-black ${lineAmount > 0 ? 'text-slate-900 font-mono' : 'text-slate-300'
+                                }`}
                             >
                               {formatPrice(lineAmount)}
                             </span>

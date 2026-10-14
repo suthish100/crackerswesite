@@ -78,8 +78,16 @@ export default function CheckoutPage() {
           customerName: data.order.customerName,
           customerPhone: data.order.customerPhone,
           customerAddress: data.order.customerAddress,
+          customerNote: customerNote.trim() || undefined,
           totalAmount: data.order.totalAmount,
           whatsappLink: data.whatsappLink,
+          items: items.map((item) => ({
+            name: item.product.name,
+            quantity: item.quantity,
+            unitPrice: item.unitPrice,
+            sourcePackageName: item.sourcePackageName || null,
+          })),
+          createdAt: new Date().toISOString(),
         }));
       } catch (storageError) {
         console.warn('Unable to persist order confirmation metadata:', storageError);

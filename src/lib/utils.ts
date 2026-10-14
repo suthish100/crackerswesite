@@ -38,21 +38,25 @@ export function generateWhatsAppLink(
   customerAddress: string,
   items: Array<{ name: string; quantity: number; unitPrice: number }>,
   totalAmount: number,
+  invoiceUrl?: string,
 ): string {
   let itemsText = '';
   items.forEach((item) => {
     itemsText += `• ${item.name} × ${item.quantity} — ₹${(item.unitPrice * item.quantity).toFixed(0)}\n`;
   });
 
+  const pdfLine = invoiceUrl ? `\n📄 *Official PDF Invoice:*\n${invoiceUrl}\n` : '';
+
   const message =
-    `*🎆 NEW ORDER — ${orderId}*\n\n` +
+    `*🎆 NEW ORDER INVOICE — ${orderId}*\n\n` +
     `*Customer:*\n` +
     `Name: ${customerName}\n` +
     `Phone: ${customerPhone}\n` +
     `Address: ${customerAddress}\n\n` +
     `*Items:*\n${itemsText}\n` +
-    `*Total: ₹${totalAmount.toFixed(0)}*\n\n` +
-    `Please confirm this order. Thank you! 🙏`;
+    `*Total: ₹${totalAmount.toFixed(0)}*` +
+    pdfLine +
+    `\nPlease verify and confirm this order. Thank you! 🙏`;
 
   return `https://wa.me/${normalizeIndianPhone(adminPhone)}?text=${encodeURIComponent(message)}`;
 }

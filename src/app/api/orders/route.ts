@@ -143,6 +143,10 @@ export async function POST(request: NextRequest) {
       return order;
     }, { maxWait: 15000, timeout: 30000 });
 
+    const host = request.headers.get('host') || 'localhost:3000';
+    const protocol = request.headers.get('x-forwarded-proto') || 'http';
+    const invoiceUrl = `${protocol}://${host}/api/orders/${encodeURIComponent(publicOrderId)}/invoice`;
+
     const adminPhone = process.env.NEXT_PUBLIC_ADMIN_WHATSAPP || ORDER_SUPPORT_PHONE;
     const whatsappLink = generateWhatsAppLink(
       adminPhone,
@@ -151,7 +155,8 @@ export async function POST(request: NextRequest) {
       customerPhone,
       customerAddress,
       whatsappItemsList,
-      totalAmount
+      totalAmount,
+      invoiceUrl
     );
 
     return NextResponse.json({
@@ -162,11 +167,14 @@ export async function POST(request: NextRequest) {
         customerName: result.customerName,
         customerPhone: result.customerPhone,
         customerAddress: result.customerAddress,
+        customerNote: result.customerNote,
         totalAmount: result.totalAmount,
         status: result.status,
         createdAt: result.createdAt,
+        items: whatsappItemsList,
       },
       whatsappLink,
+      invoiceUrl,
     });
   } catch (error) {
     console.error('Error creating order:', error);
