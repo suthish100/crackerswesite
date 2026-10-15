@@ -26,19 +26,14 @@ test.describe('Website Improvement & Feature Verification', () => {
     await expect(page.getByRole('link', { name: /Quick Order List/i }).first()).toBeVisible();
     await expect(page.getByRole('link', { name: /Track Order/i }).first()).toBeVisible();
 
-    // 4 Trust badges
+    // 3 Promotional badges (Quality Verified removed per specification)
     await expect(page.getByText('Original Sivakasi Products')).toBeVisible();
-    await expect(page.getByText('Quality Verified')).toBeVisible();
     await expect(page.getByText('Safe Delivery')).toBeVisible();
     await expect(page.getByText('Support & Assistance')).toBeVisible();
 
-    // Traditional Showcase section ("Celebrate with Sivakasi")
-    await expect(page.getByText('CELEBRATE WITH SIVAKASI')).toBeVisible();
-    await expect(page.getByRole('heading', { name: /Heritage Fireworks Direct from the Heartland/i })).toBeVisible();
-
-    // Tamil Nadu statewide delivery celebration map
-    await expect(page.getByText('From Sivakasi to Every Corner of Tamil Nadu')).toBeVisible();
-    await expect(page.getByText(/Lighting up Tamil Nadu with authentic Sivakasi crackers/i)).toBeVisible();
+    // Best Sellers section and Animated Video / Banner Slot per Main Plan
+    await expect(page.getByText(/BEST SELLERS/i).first()).toBeVisible();
+    await expect(page.getByText(/Animated Video \/ Banner Slot|Video & Banner Slot/i).first()).toBeVisible();
   });
 
   test('2. Quick Order introductory section is removed and shopping starts directly', async ({ page }) => {
@@ -56,7 +51,7 @@ test.describe('Website Improvement & Feature Verification', () => {
     await expect(page.locator('th:has-text("Amount")')).toBeVisible();
 
     // Discount messaging reflects "UP TO 70% DISCOUNT"
-    await expect(page.locator('text=/UP TO 70% DISCOUNT/').first()).toBeVisible();
+    await expect(page.locator('text=/UP TO 70% DISCOUNT/').filter({ visible: true }).first()).toBeVisible();
   });
 
   test('3. Persistent navigation and sticky navbar behavior', async ({ page, isMobile }) => {

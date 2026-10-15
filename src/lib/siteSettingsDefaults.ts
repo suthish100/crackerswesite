@@ -66,4 +66,19 @@ export const DEFAULT_SITE_SETTINGS: SiteSettings = {
       },
     ],
   },
+  bestSellers: {
+    productIds: [],
+    title: 'BEST SELLERS',
+    subtitle: 'Hand-picked festive favorites from our factory',
+  },
+  promoBanner: {
+    enabled: true,
+    title: 'Celebrate with Sivakasi',
+    subtitle: 'Experience authentic handcrafted green crackers with vibrant lights and festive cheer.',
+    videoUrl: '',
+    bannerImageUrl: '',
+    badge: 'FESTIVE SHOWCASE',
+    linkText: 'Explore Crackers',
+    destinationUrl: '/products',
+  },
 };

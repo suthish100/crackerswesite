@@ -25,8 +25,16 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
       where: { isActive: true },
       orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }],
     });
-  } catch (error) {
-    console.error('Unable to load product categories:', error);
+  } catch {
+    try {
+      await new Promise((r) => setTimeout(r, 600));
+      categories = await prisma.category.findMany({
+        where: { isActive: true },
+        orderBy: [{ sortOrder: 'asc' }, { name: 'asc' }],
+      });
+    } catch (error) {
+      console.error('Unable to load product categories:', error);
+    }
   }
 
   let products: Awaited<ReturnType<typeof prisma.product.findMany>> = [];
@@ -36,8 +44,17 @@ export default async function ProductsPage({ searchParams }: ProductsPageProps) 
       orderBy: { id: 'desc' },
       include: { category: true },
     });
-  } catch (error) {
-    console.error('Unable to load products:', error);
+  } catch {
+    try {
+      await new Promise((r) => setTimeout(r, 600));
+      products = await prisma.product.findMany({
+        where: { isActive: true },
+        orderBy: { id: 'desc' },
+        include: { category: true },
+      });
+    } catch (error) {
+      console.error('Unable to load products:', error);
+    }
   }
 
   const serializedProducts = products.map((p) => ({

@@ -141,7 +141,7 @@ export default function AdminOrdersPage() {
     <div className="space-y-6">
       {/* Toast Notification */}
       {adminToast && (
-        <div className="fixed top-6 right-6 z-50 bg-emerald-500 text-slate-950 font-bold px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-2 border border-emerald-400">
+        <div className="fixed top-6 right-6 z-50 bg-slate-900 text-white font-bold px-4 py-2.5 rounded-2xl shadow-2xl flex items-center gap-2 border border-slate-700">
           <span>{adminToast}</span>
         </div>
       )}
@@ -149,22 +149,22 @@ export default function AdminOrdersPage() {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-white">Order Processing & Management</h1>
-          <p className="text-slate-400 text-xs mt-1">
+          <h1 className="text-2xl font-black text-slate-900">Order Processing & Management</h1>
+          <p className="text-slate-500 text-xs mt-1">
             Verify customer orders, generate & share PDF invoices, update status workflows, and audit history.
           </p>
         </div>
       </div>
 
       {/* Status Filter Tabs & Search */}
-      <div className="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center bg-slate-900 border border-slate-800 p-4 rounded-3xl">
+      <div className="flex flex-col lg:flex-row gap-4 justify-between items-start lg:items-center bg-white border border-slate-200 p-4 rounded-3xl shadow-xs">
         <div className="flex items-center gap-2 overflow-x-auto pb-2 lg:pb-0 w-full lg:w-auto">
           <button
             onClick={() => setStatusFilter('all')}
             className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors ${
               statusFilter === 'all'
-                ? 'bg-amber-500 text-slate-950 shadow-md'
-                : 'bg-slate-950 text-slate-400 hover:bg-slate-800'
+                ? 'bg-slate-900 text-white shadow-sm'
+                : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
             }`}
           >
             All Orders
@@ -176,8 +176,8 @@ export default function AdminOrdersPage() {
               onClick={() => setStatusFilter(st)}
               className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-colors ${
                 statusFilter === st
-                  ? 'bg-amber-500 text-slate-950 shadow-md'
-                  : 'bg-slate-950 text-slate-400 hover:bg-slate-800'
+                  ? 'bg-slate-900 text-white shadow-sm'
+                  : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
               }`}
             >
               {st}
@@ -191,7 +191,7 @@ export default function AdminOrdersPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search Order ID, Name, Phone..."
-            className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3.5 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500"
+            className="w-full bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-slate-900 focus:bg-white"
           />
         </div>
       </div>
@@ -200,20 +200,20 @@ export default function AdminOrdersPage() {
       {loading ? (
         <div className="py-20 text-center text-slate-400 text-sm">Loading orders...</div>
       ) : (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-xl">
+        <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs">
           {/* Mobile Swipe Hint */}
-          <div className="md:hidden px-4 py-2 bg-slate-950/70 border-b border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
+          <div className="md:hidden px-4 py-2 bg-slate-50 border-b border-slate-200 text-[11px] text-slate-500 flex items-center justify-between">
             <span className="flex items-center gap-1.5 font-medium">
               <span>👉</span>
               <span>Scroll sideways to view all columns & actions</span>
             </span>
-            <span className="text-[10px] font-mono text-amber-400/80 bg-slate-800/80 px-2 py-0.5 rounded-full">
+            <span className="text-[10px] font-mono text-slate-700 bg-slate-200 px-2 py-0.5 rounded-full">
               swipe ↔
             </span>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs min-w-[840px]">
-              <thead className="bg-slate-950 text-slate-400 uppercase text-[10px] font-bold">
+              <thead className="bg-slate-50 text-slate-600 uppercase text-[10px] font-bold border-b border-slate-200">
                 <tr>
                   <th className="p-4">Order ID</th>
                   <th className="p-4">Customer Details</th>
@@ -224,33 +224,33 @@ export default function AdminOrdersPage() {
                   <th className="p-4 text-right">Actions & Invoices</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800 text-slate-300">
+              <tbody className="divide-y divide-slate-100 text-slate-700">
                 {orders.length === 0 ? (
                   <tr>
-                    <td colSpan={7} className="p-8 text-center text-slate-500">
+                    <td colSpan={7} className="p-8 text-center text-slate-400">
                       No orders found matching criteria.
                     </td>
                   </tr>
                 ) : (
                   orders.map((o) => (
-                    <tr key={o.id} data-testid="order-row" className="hover:bg-slate-950/40 transition-colors">
-                      <td className="p-4 font-mono font-bold text-amber-400 text-sm">{o.publicOrderId}</td>
+                    <tr key={o.id} data-testid="order-row" className="hover:bg-slate-50/70 transition-colors">
+                      <td className="p-4 font-mono font-bold text-slate-900 text-sm">{o.publicOrderId}</td>
                       <td className="p-4">
-                        <div className="font-bold text-white">{o.customerName}</div>
-                        <div className="text-slate-400 font-mono text-[11px]">📞 {o.customerPhone}</div>
+                        <div className="font-bold text-slate-900">{o.customerName}</div>
+                        <div className="text-slate-500 font-mono text-[11px]">📞 {o.customerPhone}</div>
                       </td>
-                      <td className="p-4 font-semibold text-slate-300">
+                      <td className="p-4 font-semibold text-slate-600">
                         {o.items?.length || 0} items ({o.items?.reduce((s, i) => s + i.quantity, 0)} pcs)
                       </td>
-                      <td className="p-4 font-black text-amber-300 text-sm">{formatPrice(o.totalAmount)}</td>
+                      <td className="p-4 font-black text-slate-900 text-sm">{formatPrice(o.totalAmount)}</td>
                       <td className="p-4">
                         <span
                           data-testid="order-status-badge"
                           className="px-3 py-1 rounded-full text-[10px] font-bold border uppercase"
                           style={{
-                            backgroundColor: `${STATUS_COLORS[o.status]}20`,
-                            color: STATUS_COLORS[o.status] || '#f59e0b',
-                            borderColor: `${STATUS_COLORS[o.status]}40`,
+                            backgroundColor: `${STATUS_COLORS[o.status]}15`,
+                            color: STATUS_COLORS[o.status] || '#0f172a',
+                            borderColor: `${STATUS_COLORS[o.status]}35`,
                           }}
                         >
                           {o.status}
@@ -265,7 +265,7 @@ export default function AdminOrdersPage() {
                           <button
                             onClick={() => handleDownloadInvoice(o)}
                             title="Download Official Invoice PDF"
-                            className="px-2.5 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30 text-xs flex items-center gap-1 transition-all cursor-pointer"
+                            className="px-2.5 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold border border-slate-200 text-xs flex items-center gap-1 transition-all cursor-pointer"
                           >
                             <span>📄</span>
                             <span className="hidden sm:inline">PDF</span>
@@ -275,7 +275,7 @@ export default function AdminOrdersPage() {
                           <button
                             onClick={() => setShareOrder(o)}
                             title="Share Invoice (PDF)"
-                            className="px-2.5 py-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 font-bold border border-cyan-500/30 text-xs flex items-center gap-1 transition-all cursor-pointer"
+                            className="px-2.5 py-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-900 font-bold border border-blue-200 text-xs flex items-center gap-1 transition-all cursor-pointer"
                           >
                             <span>📤</span>
                             <span className="hidden sm:inline">Share</span>
@@ -284,7 +284,7 @@ export default function AdminOrdersPage() {
                           {/* Manage Order Modal */}
                           <button
                             onClick={() => openOrderDetail(o)}
-                            className="px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 font-bold border border-amber-500/30 whitespace-nowrap transition-all cursor-pointer"
+                            className="px-3 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs whitespace-nowrap transition-all shadow-xs cursor-pointer"
                           >
                             Manage →
                           </button>
@@ -301,14 +301,14 @@ export default function AdminOrdersPage() {
 
       {/* Order Detail & Status Management Modal */}
       {selectedOrder && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-3xl w-full p-6 sm:p-8 shadow-2xl space-y-6 max-h-[90vh] flex flex-col">
+        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-3xl max-w-3xl w-full p-6 sm:p-8 shadow-2xl space-y-6 max-h-[90vh] flex flex-col text-slate-900">
             {/* Modal Header with Invoice Actions */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-800 pb-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-200 pb-4">
               <div>
                 <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Order Management</span>
-                <h2 className="text-2xl font-black text-amber-400 font-mono">{selectedOrder.publicOrderId}</h2>
-                <p className="text-xs text-slate-400 mt-0.5">
+                <h2 className="text-2xl font-black text-slate-900 font-mono">{selectedOrder.publicOrderId}</h2>
+                <p className="text-xs text-slate-500 mt-0.5">
                   Placed on {new Date(selectedOrder.createdAt).toLocaleString('en-IN')}
                 </p>
               </div>
@@ -317,7 +317,7 @@ export default function AdminOrdersPage() {
               <div className="flex items-center gap-2 flex-wrap">
                 <button
                   onClick={() => handleDownloadInvoice(selectedOrder)}
-                  className="px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-400 font-bold border border-emerald-500/30 text-xs flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold border border-slate-200 text-xs flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
                   title="Download Invoice PDF"
                 >
                   <span>📄</span>
@@ -326,7 +326,7 @@ export default function AdminOrdersPage() {
 
                 <button
                   onClick={() => setShareOrder(selectedOrder)}
-                  className="px-3 py-1.5 rounded-xl bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-400 font-bold border border-cyan-500/30 text-xs flex items-center gap-1.5 transition-all shadow-sm cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-900 font-bold border border-blue-200 text-xs flex items-center gap-1.5 transition-all shadow-xs cursor-pointer"
                   title="Share Invoice as PDF"
                 >
                   <span>📤</span>
@@ -337,7 +337,7 @@ export default function AdminOrdersPage() {
                   href={`/api/orders/${encodeURIComponent(selectedOrder.publicOrderId)}/invoice`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold border border-slate-700 text-xs flex items-center gap-1.5 transition-all"
+                  className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold border border-slate-200 text-xs flex items-center gap-1.5 transition-all"
                   title="Open PDF Preview in New Tab"
                 >
                   <span>👁️</span>
@@ -346,7 +346,7 @@ export default function AdminOrdersPage() {
 
                 <button
                   onClick={() => setSelectedOrder(null)}
-                  className="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800 transition-colors ml-1"
+                  className="text-slate-400 hover:text-slate-700 p-2 rounded-lg hover:bg-slate-100 transition-colors ml-1"
                 >
                   ✕
                 </button>
@@ -356,38 +356,38 @@ export default function AdminOrdersPage() {
             {/* Modal Body */}
             <div className="overflow-y-auto flex-1 space-y-6 pr-1 text-xs">
               {/* Customer Info Card */}
-              <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <h4 className="font-bold text-amber-300 uppercase tracking-wider text-[10px] mb-2">Customer Info</h4>
-                  <p className="font-bold text-white text-sm">{selectedOrder.customerName}</p>
-                  <p className="text-slate-400 font-mono mt-0.5">📞 {selectedOrder.customerPhone}</p>
+                  <h4 className="font-bold text-slate-500 uppercase tracking-wider text-[10px] mb-2">Customer Info</h4>
+                  <p className="font-bold text-slate-900 text-sm">{selectedOrder.customerName}</p>
+                  <p className="text-slate-500 font-mono mt-0.5">📞 {selectedOrder.customerPhone}</p>
                   {selectedOrder.customerNote && (
-                    <p className="text-amber-400/90 text-[11px] mt-2 bg-amber-500/10 p-2 rounded-lg border border-amber-500/20">
+                    <p className="text-slate-700 text-[11px] mt-2 bg-white p-2 rounded-lg border border-slate-200">
                       Note: {selectedOrder.customerNote}
                     </p>
                   )}
                 </div>
 
                 <div>
-                  <h4 className="font-bold text-amber-300 uppercase tracking-wider text-[10px] mb-2">Delivery Address</h4>
-                  <p className="text-slate-300 leading-relaxed">{selectedOrder.customerAddress}</p>
+                  <h4 className="font-bold text-slate-500 uppercase tracking-wider text-[10px] mb-2">Delivery Address</h4>
+                  <p className="text-slate-700 leading-relaxed">{selectedOrder.customerAddress}</p>
                 </div>
               </div>
 
               {/* Status Updater Form */}
-              <form onSubmit={handleStatusUpdate} className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-2xl space-y-3">
-                <h4 className="font-extrabold text-amber-300 text-xs uppercase tracking-wider">
+              <form onSubmit={handleStatusUpdate} className="bg-slate-50 border border-slate-200 p-4 rounded-2xl space-y-3">
+                <h4 className="font-extrabold text-slate-900 text-xs uppercase tracking-wider">
                   ⚡ Update Order Status (Appends to Customer Timeline)
                 </h4>
 
                 <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
                   <div className="sm:col-span-5">
-                    <label className="block font-bold text-slate-300 mb-1">New Status</label>
+                    <label className="block font-bold text-slate-700 mb-1">New Status</label>
                     <select
                       data-testid="order-status-select"
                       value={newStatus}
                       onChange={(e) => setNewStatus(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold"
+                      className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-bold focus:outline-none focus:border-slate-900"
                     >
                       {ORDER_STATUSES.map((st) => (
                         <option key={st} value={st}>{st}</option>
@@ -396,15 +396,14 @@ export default function AdminOrdersPage() {
                   </div>
 
                   <div className="sm:col-span-7">
-                    <label className="block font-bold text-slate-300 mb-1">Optional Note for Customer</label>
+                    <label className="block font-bold text-slate-700 mb-1">Optional Note for Customer</label>
                     <input
                       type="text"
                       value={statusNote}
                       onChange={(e) => setStatusNote(e.target.value)}
                       placeholder="e.g. Payment verified via UPI / Shipped via Express Cargo"
-                      className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white"
-                    >
-                    </input>
+                      className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-slate-900"
+                    />
                   </div>
                 </div>
 
@@ -412,7 +411,7 @@ export default function AdminOrdersPage() {
                   <button
                     type="submit"
                     disabled={updatingStatus || newStatus === selectedOrder.status}
-                    className="px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs shadow-md disabled:opacity-50 cursor-pointer"
+                    className="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs shadow-md disabled:opacity-50 cursor-pointer"
                   >
                     {updatingStatus ? 'Updating Status...' : 'Apply Status Change ✓'}
                   </button>
@@ -422,12 +421,12 @@ export default function AdminOrdersPage() {
               {/* Ordered Items Breakdown */}
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
-                  <h4 className="font-bold text-slate-300 uppercase tracking-wider text-[11px]">
+                  <h4 className="font-bold text-slate-600 uppercase tracking-wider text-[11px]">
                     Order Items Breakdown ({selectedOrder.items?.length || 0})
                   </h4>
                   <button
                     onClick={() => handleDownloadInvoice(selectedOrder)}
-                    className="text-amber-400 hover:text-amber-300 font-bold text-[11px] underline"
+                    className="text-slate-900 hover:text-blue-900 font-bold text-[11px] underline"
                   >
                     Download Invoice PDF ↓
                   </button>
@@ -435,45 +434,45 @@ export default function AdminOrdersPage() {
 
                 <div className="space-y-2">
                   {selectedOrder.items?.map((item) => (
-                    <div key={item.id} className="bg-slate-950 p-3.5 rounded-xl border border-slate-800 flex justify-between items-center">
+                    <div key={item.id} className="bg-slate-50 p-3.5 rounded-xl border border-slate-200 flex justify-between items-center">
                       <div>
-                        <h5 className="font-bold text-white text-sm">{item.product.name}</h5>
+                        <h5 className="font-bold text-slate-900 text-sm">{item.product.name}</h5>
                         {item.sourcePackage && (
-                          <span className="inline-block px-2 py-0.5 rounded text-[10px] font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/20 mt-1">
+                          <span className="inline-block px-2 py-0.5 rounded text-[10px] font-semibold bg-blue-50 text-blue-900 border border-blue-200 mt-1">
                             From Ready Package: {item.sourcePackage.name}
                           </span>
                         )}
-                        <p className="text-slate-400 text-[11px] mt-1">
+                        <p className="text-slate-500 text-[11px] mt-1">
                           Qty: {item.quantity} × {formatPrice(item.unitPrice)}
                         </p>
                       </div>
 
-                      <span className="font-black text-amber-300 text-sm">
+                      <span className="font-black text-slate-900 text-sm">
                         {formatPrice(item.unitPrice * item.quantity)}
                       </span>
                     </div>
                   ))}
                 </div>
 
-                <div className="flex justify-between items-center p-4 bg-slate-950 rounded-2xl border border-slate-800 font-bold">
-                  <span className="text-slate-400">Total Order Amount</span>
-                  <span className="text-xl font-black text-amber-400">{formatPrice(selectedOrder.totalAmount)}</span>
+                <div className="flex justify-between items-center p-4 bg-slate-100 rounded-2xl border border-slate-200 font-bold">
+                  <span className="text-slate-600">Total Order Amount</span>
+                  <span className="text-xl font-black text-slate-900">{formatPrice(selectedOrder.totalAmount)}</span>
                 </div>
               </div>
 
               {/* Status History Timeline Audit Trail */}
-              <div className="space-y-3 pt-3 border-t border-slate-800">
-                <h4 className="font-bold text-slate-300 uppercase tracking-wider text-[11px]">
+              <div className="space-y-3 pt-3 border-t border-slate-200">
+                <h4 className="font-bold text-slate-600 uppercase tracking-wider text-[11px]">
                   Order Status History Logs
                 </h4>
                 <div className="space-y-2">
                   {selectedOrder.statusHistory?.map((hist) => (
-                    <div key={hist.id} className="bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-[11px]">
+                    <div key={hist.id} className="bg-slate-50 p-3 rounded-xl border border-slate-200 flex justify-between items-center text-[11px]">
                       <div>
-                        <span className="font-bold text-amber-400">{hist.status}</span>
-                        {hist.note && <span className="text-slate-400 ml-2">— {hist.note}</span>}
+                        <span className="font-bold text-slate-900">{hist.status}</span>
+                        {hist.note && <span className="text-slate-600 ml-2">— {hist.note}</span>}
                       </div>
-                      <span className="text-slate-500">{new Date(hist.changedAt).toLocaleString('en-IN')}</span>
+                      <span className="text-slate-400">{new Date(hist.changedAt).toLocaleString('en-IN')}</span>
                     </div>
                   ))}
                 </div>
@@ -485,25 +484,25 @@ export default function AdminOrdersPage() {
 
       {/* Share Invoice as PDF Modal */}
       {shareOrder && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-5 animate-scale-in">
-            <div className="flex justify-between items-center border-b border-slate-800 pb-3">
+        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-5 animate-scale-in text-slate-900">
+            <div className="flex justify-between items-center border-b border-slate-200 pb-3">
               <div>
-                <h3 className="text-base font-black text-white flex items-center gap-2">
+                <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
                   <span>📤</span> Share Invoice (PDF)
                 </h3>
-                <p className="text-xs text-slate-400 font-mono mt-0.5">Order: {shareOrder.publicOrderId}</p>
+                <p className="text-xs text-slate-500 font-mono mt-0.5">Order: {shareOrder.publicOrderId}</p>
               </div>
               <button
                 onClick={() => setShareOrder(null)}
-                className="text-slate-400 hover:text-white p-1.5 rounded-lg hover:bg-slate-800"
+                className="text-slate-400 hover:text-slate-700 p-1.5 rounded-lg hover:bg-slate-100"
               >
                 ✕
               </button>
             </div>
 
             <div className="space-y-3 text-xs">
-              {/* Option 1: Native Device Share (Sends PDF file directly to chosen app) */}
+              {/* Option 1: Native Device Share */}
               <button
                 onClick={async () => {
                   const res = await shareOrderInvoicePdf(toInvoiceData(shareOrder));
@@ -514,19 +513,19 @@ export default function AdminOrdersPage() {
                     showToast('📄 Invoice PDF downloaded to your device!');
                   }
                 }}
-                className="w-full flex items-center justify-between p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/30 hover:border-amber-500/60 text-left transition-all cursor-pointer"
+                className="w-full flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 border border-slate-200 hover:bg-slate-100 text-left transition-all cursor-pointer"
               >
                 <div className="flex items-center gap-3">
                   <span className="text-2xl">📱</span>
                   <div>
-                    <p className="font-bold text-white text-xs">Share PDF to Any App</p>
-                    <p className="text-[11px] text-slate-400">Opens native share dialog to send the actual PDF file directly</p>
+                    <p className="font-bold text-slate-900 text-xs">Share PDF to Any App</p>
+                    <p className="text-[11px] text-slate-500">Opens native share dialog to send the actual PDF file directly</p>
                   </div>
                 </div>
-                <span className="text-amber-400 font-bold text-sm">→</span>
+                <span className="text-slate-900 font-bold text-sm">→</span>
               </button>
 
-              {/* Option 2: Send WhatsApp to Customer with PDF link & breakdown */}
+              {/* Option 2: Send WhatsApp to Customer */}
               <button
                 onClick={() => {
                   downloadOrderInvoicePdf(toInvoiceData(shareOrder));
@@ -537,18 +536,18 @@ export default function AdminOrdersPage() {
                   showToast('📄 PDF downloaded! Opening WhatsApp chat...');
                   window.open(waUrl, '_blank', 'noopener,noreferrer');
                 }}
-                className="w-full flex items-center justify-between p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 hover:border-emerald-500/60 text-left transition-all cursor-pointer"
+                className="w-full flex items-center justify-between p-3.5 rounded-2xl bg-emerald-50 border border-emerald-200 hover:bg-emerald-100 text-left transition-all cursor-pointer"
               >
                 <div className="flex items-center gap-3">
                   <span className="text-2xl">💬</span>
                   <div>
-                    <p className="font-bold text-white text-xs">Send to Customer on WhatsApp</p>
-                    <p className="text-[11px] text-slate-400">
+                    <p className="font-bold text-emerald-950 text-xs">Send to Customer on WhatsApp</p>
+                    <p className="text-[11px] text-emerald-700">
                       To {shareOrder.customerName} ({shareOrder.customerPhone})
                     </p>
                   </div>
                 </div>
-                <span className="text-emerald-400 font-bold text-sm">→</span>
+                <span className="text-emerald-700 font-bold text-sm">→</span>
               </button>
 
               {/* Option 3: Download PDF to device */}
@@ -557,16 +556,16 @@ export default function AdminOrdersPage() {
                   downloadOrderInvoicePdf(toInvoiceData(shareOrder));
                   showToast('✅ Invoice PDF downloaded!');
                 }}
-                className="w-full flex items-center justify-between p-3.5 rounded-2xl bg-slate-950 border border-slate-800 hover:border-slate-700 text-left transition-all cursor-pointer"
+                className="w-full flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 border border-slate-200 hover:bg-slate-100 text-left transition-all cursor-pointer"
               >
                 <div className="flex items-center gap-3">
                   <span className="text-2xl">📥</span>
                   <div>
-                    <p className="font-bold text-white text-xs">Download Invoice PDF</p>
-                    <p className="text-[11px] text-slate-400">Save Invoice_{shareOrder.publicOrderId}.pdf directly</p>
+                    <p className="font-bold text-slate-900 text-xs">Download Invoice PDF</p>
+                    <p className="text-[11px] text-slate-500">Save Invoice_{shareOrder.publicOrderId}.pdf directly</p>
                   </div>
                 </div>
-                <span className="text-slate-400 font-bold text-sm">→</span>
+                <span className="text-slate-900 font-bold text-sm">→</span>
               </button>
 
               {/* Option 4: Copy Direct PDF Link */}
@@ -576,16 +575,16 @@ export default function AdminOrdersPage() {
                   void navigator.clipboard.writeText(url);
                   showToast('📋 PDF direct download link copied to clipboard!');
                 }}
-                className="w-full flex items-center justify-between p-3.5 rounded-2xl bg-slate-950 border border-slate-800 hover:border-slate-700 text-left transition-all cursor-pointer"
+                className="w-full flex items-center justify-between p-3.5 rounded-2xl bg-slate-50 border border-slate-200 hover:bg-slate-100 text-left transition-all cursor-pointer"
               >
                 <div className="flex items-center gap-3">
                   <span className="text-2xl">📋</span>
                   <div>
-                    <p className="font-bold text-white text-xs">Copy Direct PDF Link</p>
-                    <p className="text-[11px] text-slate-400">Permanent link to download this invoice PDF</p>
+                    <p className="font-bold text-slate-900 text-xs">Copy Direct PDF Link</p>
+                    <p className="text-[11px] text-slate-500">Permanent link to download this invoice PDF</p>
                   </div>
                 </div>
-                <span className="text-slate-400 font-bold text-sm">→</span>
+                <span className="text-slate-900 font-bold text-sm">→</span>
               </button>
             </div>
           </div>

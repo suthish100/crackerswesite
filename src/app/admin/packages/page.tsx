@@ -133,21 +133,21 @@ export default function AdminPackagesPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-white">Ready-Made Packages Builder</h1>
-          <p className="text-slate-400 text-xs mt-1">Configure preset Diwali combo packages with default items and prices.</p>
+          <h1 className="text-2xl font-black text-slate-900">Ready-Made Packages Builder</h1>
+          <p className="text-slate-500 text-xs mt-1">Configure preset Diwali combo packages with default items and prices.</p>
         </div>
 
         <button
           onClick={openCreateModal}
-          className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-slate-950 font-bold text-xs shadow-lg shadow-amber-500/20"
+          className="px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs shadow-md shadow-slate-900/10 transition-all"
         >
           + Create New Package
         </button>
       </div>
 
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl overflow-hidden shadow-xl">
+      <div className="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-xs">
         <table className="w-full text-left text-xs">
-          <thead className="bg-slate-950 text-slate-400 uppercase text-[10px] font-bold">
+          <thead className="bg-slate-50 text-slate-600 uppercase text-[10px] font-bold border-b border-slate-200">
             <tr>
               <th className="p-4">Package Name</th>
               <th className="p-4">Base Price</th>
@@ -156,22 +156,22 @@ export default function AdminPackagesPage() {
               <th className="p-4 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800 text-slate-300">
+          <tbody className="divide-y divide-slate-100 text-slate-700">
             {packages.map((pkg) => (
-              <tr key={pkg.id} className="hover:bg-slate-950/40">
-                <td className="p-4 font-bold text-white text-sm">{pkg.name}</td>
-                <td className="p-4 font-bold text-amber-400 text-sm">{formatPrice(pkg.basePrice)}</td>
-                <td className="p-4 text-slate-400">
+              <tr key={pkg.id} className="hover:bg-slate-50/70 transition-colors">
+                <td className="p-4 font-bold text-slate-900 text-sm">{pkg.name}</td>
+                <td className="p-4 font-bold text-slate-900 text-sm">{formatPrice(pkg.basePrice)}</td>
+                <td className="p-4 text-slate-500">
                   {pkg.items?.length || 0} product types ({pkg.items?.reduce((s, i) => s + i.defaultQty, 0)} total pcs)
                 </td>
                 <td className="p-4">
-                  <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold border ${pkg.isActive ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' : 'bg-rose-500/10 text-rose-400 border-rose-500/30'}`}>
+                  <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold border ${pkg.isActive ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-rose-50 text-rose-700 border-rose-200'}`}>
                     {pkg.isActive ? 'Active' : 'Disabled'}
                   </span>
                 </td>
                 <td className="p-4 text-right space-x-2">
-                  <button onClick={() => openEditModal(pkg)} className="px-3 py-1.5 rounded-lg bg-slate-800 text-slate-200 font-semibold">Edit</button>
-                  <button onClick={() => handleDelete(pkg.id)} className="px-3 py-1.5 rounded-lg bg-rose-500/10 text-rose-400 font-semibold">Delete</button>
+                  <button onClick={() => openEditModal(pkg)} className="px-3 py-1.5 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold border border-slate-200 transition-colors">Edit</button>
+                  <button onClick={() => handleDelete(pkg.id)} className="px-3 py-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 font-bold border border-rose-200 transition-colors">Delete</button>
                 </td>
               </tr>
             ))}
@@ -180,35 +180,35 @@ export default function AdminPackagesPage() {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl max-w-xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] flex flex-col">
-            <div className="flex justify-between items-center border-b border-slate-800 pb-3">
-              <h3 className="font-bold text-lg text-white">{editingPackage ? 'Edit Package' : 'Create Package'}</h3>
-              <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-white">✕</button>
+        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-3xl max-w-xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] flex flex-col text-slate-900">
+            <div className="flex justify-between items-center border-b border-slate-200 pb-3">
+              <h3 className="font-bold text-lg text-slate-900">{editingPackage ? 'Edit Package' : 'Create Package'}</h3>
+              <button onClick={() => setIsModalOpen(false)} className="text-slate-400 hover:text-slate-700">✕</button>
             </div>
 
             <form onSubmit={handleSave} className="space-y-4 text-xs overflow-y-auto flex-1 pr-1">
               <div>
-                <label className="block font-bold text-slate-300 mb-1">Package Name *</label>
+                <label className="block font-bold text-slate-700 mb-1">Package Name *</label>
                 <input
                   type="text"
                   required
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-slate-900"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-bold text-slate-300 mb-1">Base Price (₹) *</label>
+                  <label className="block font-bold text-slate-700 mb-1">Base Price (₹) *</label>
                   <input
                     type="number"
                     step="0.01"
                     required
                     value={basePrice}
                     onChange={(e) => setBasePrice(e.target.value)}
-                    className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white"
+                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-slate-900"
                   />
                 </div>
                 <div className="flex items-center pt-5">
@@ -217,25 +217,25 @@ export default function AdminPackagesPage() {
                     id="pkgActiveCheck"
                     checked={isActive}
                     onChange={(e) => setIsActive(e.target.checked)}
-                    className="rounded bg-slate-950 border-slate-700 mr-2"
+                    className="rounded border-slate-300 bg-white accent-slate-900 mr-2"
                   />
-                  <label htmlFor="pkgActiveCheck" className="font-bold text-slate-300">Active Package</label>
+                  <label htmlFor="pkgActiveCheck" className="font-bold text-slate-700">Active Package</label>
                 </div>
               </div>
 
               <div>
-                <label className="block font-bold text-slate-300 mb-1">Description</label>
+                <label className="block font-bold text-slate-700 mb-1">Description</label>
                 <textarea
                   rows={2}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-slate-900"
                 />
               </div>
 
               {/* Package Default Items Picker */}
-              <div className="pt-3 border-t border-slate-800 space-y-3">
-                <h4 className="font-bold text-amber-300 uppercase tracking-wider text-[11px]">Configure Default Package Items</h4>
+              <div className="pt-3 border-t border-slate-200 space-y-3">
+                <h4 className="font-bold text-slate-900 uppercase tracking-wider text-[11px]">Configure Default Package Items</h4>
                 
                 <div className="flex gap-2">
                   <select
@@ -243,7 +243,7 @@ export default function AdminPackagesPage() {
                       if (e.target.value) handleAddItemRow(Number(e.target.value));
                       e.target.value = '';
                     }}
-                    className="flex-1 bg-slate-950 border border-slate-700 rounded-xl px-3 py-2 text-white"
+                    className="flex-1 bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-slate-900"
                   >
                     <option value="">Select a product to add to package...</option>
                     {products.map(p => (
@@ -254,26 +254,26 @@ export default function AdminPackagesPage() {
 
                 <div className="space-y-2">
                   {Object.entries(selectedItems.reduce<Record<string, typeof selectedItems>>((groups, item) => { const category = products.find((p) => p.id === item.productId)?.category?.name || 'Uncategorized'; (groups[category] ||= []).push(item); return groups; }, {})).sort(([a], [b]) => a.localeCompare(b)).flatMap(([category, categoryItems]) => [
-                    <div key={`category-${category}`} className="pt-2 text-[11px] font-black uppercase tracking-wider text-amber-400">{category}</div>,
+                    <div key={`category-${category}`} className="pt-2 text-[11px] font-black uppercase tracking-wider text-slate-900">{category}</div>,
                     ...categoryItems.map(item => {
                     const prod = products.find(p => p.id === item.productId);
                     if (!prod) return null;
                     return (
-                      <div key={item.productId} className="flex items-center justify-between bg-slate-950 p-3 rounded-xl border border-slate-800">
-                        <span className="font-semibold text-white">{prod.name}</span>
+                      <div key={item.productId} className="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200">
+                        <span className="font-semibold text-slate-900">{prod.name}</span>
                         <div className="flex items-center gap-3">
-                          <span className="text-slate-400">Default Qty:</span>
+                          <span className="text-slate-500">Default Qty:</span>
                           <input
                             type="number"
                             min="1"
                             value={item.defaultQty}
                             onChange={(e) => handleUpdateItemQty(item.productId, Number(e.target.value))}
-                            className="w-16 bg-slate-900 border border-slate-700 rounded-lg px-2 py-1 text-center font-bold text-amber-300"
+                            className="w-16 bg-white border border-slate-300 rounded-lg px-2 py-1 text-center font-bold text-slate-900"
                           />
                           <button
                             type="button"
                             onClick={() => handleRemoveItemRow(item.productId)}
-                            className="text-rose-400 font-bold hover:text-rose-300"
+                            className="text-rose-700 font-bold hover:text-rose-800"
                           >
                             ✕
                           </button>
@@ -283,14 +283,14 @@ export default function AdminPackagesPage() {
                   })
                   ])}
                 </div>
-                <div className="flex justify-between rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-sm font-black text-amber-300">
+                <div className="flex justify-between rounded-xl border border-slate-200 bg-slate-100 p-3 text-sm font-black text-slate-900">
                   <span>Calculated product total</span><span>{formatPrice(selectedTotal)}</span>
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 pt-4 border-t border-slate-800">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded-xl bg-slate-800 text-slate-400 font-bold">Cancel</button>
-                <button type="submit" className="px-5 py-2 rounded-xl bg-amber-500 text-slate-950 font-bold">Save Package</button>
+              <div className="flex justify-end gap-2 pt-4 border-t border-slate-200">
+                <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 font-bold">Cancel</button>
+                <button type="submit" className="px-5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold shadow-md shadow-slate-900/10">Save Package</button>
               </div>
             </form>
           </div>

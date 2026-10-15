@@ -20,14 +20,17 @@ function getCategoryIcon(slug: string, name: string): string {
   const s = (slug + ' ' + name).toLowerCase();
   if (s.includes('sparkler') || s.includes('kambi')) return '✨';
   if (s.includes('flower') || s.includes('pot') || s.includes('kottai')) return '🌸';
-  if (s.includes('chakkar') || s.includes('ground')) return '🌀';
+  if (s.includes('chakkar') || s.includes('ground') || s.includes('wheel')) return '🎯';
   if (s.includes('rocket')) return '🚀';
-  if (s.includes('bomb') || s.includes('sound')) return '💣';
+  if (s.includes('single') || s.includes('sound')) return '💣';
+  if (s.includes('bomb')) return '💣';
   if (s.includes('aerial') || s.includes('sky') || s.includes('shot')) return '🎆';
   if (s.includes('fountain')) return '⛲';
-  if (s.includes('gift') || s.includes('box')) return '🎁';
+  if (s.includes('colour') || s.includes('color') || s.includes('match')) return '🎇';
+  if (s.includes('garland') || s.includes('wala') || s.includes('ladi')) return '✨';
+  if (s.includes('novel') || s.includes('gift') || s.includes('child')) return '🎁';
+  if (s.includes('package') || s.includes('combo')) return '📦';
   if (s.includes('bijili')) return '⚡';
-  if (s.includes('child') || s.includes('kid')) return '🧸';
   return '🧨';
 }
 
@@ -115,58 +118,55 @@ export const ExploreCrackersView: React.FC<ExploreCrackersViewProps> = ({
 
   return (
     <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8 py-4 sm:py-6 pb-24 sm:pb-28">
-      {/* Top Banner: Orange festive banner matching Screen 2 in uploaded design */}
-      <div className="mb-4 sm:mb-5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-orange-500 via-orange-600 to-amber-500 text-white p-4 sm:p-6 shadow-md relative overflow-hidden flex items-center justify-between">
-        <div className="relative z-10">
-          <h1 className="text-xl sm:text-3xl lg:text-4xl font-black uppercase tracking-tight text-white drop-shadow-xs">
-            EXPLORE CRACKERS
-          </h1>
-          <p className="mt-1 text-xs sm:text-sm font-medium text-amber-100 max-w-md">
-            Browse all products by category and add to cart easily.
-          </p>
+      {/* Top Header: Compact orange title and search bar right below the header */}
+      <div className="mb-3 sm:mb-4">
+        <div className="flex items-center justify-between gap-2 mb-2 sm:mb-3">
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            <span className="text-xl sm:text-2xl select-none" aria-hidden="true">🧨</span>
+            <h1 className="text-lg sm:text-2xl font-black uppercase tracking-tight text-orange-600 drop-shadow-xs">
+              Explore Crackers
+            </h1>
+          </div>
+          <span className="text-[10px] sm:text-xs font-bold text-amber-900 bg-amber-100/80 px-2.5 py-0.5 sm:py-1 rounded-full border border-amber-300">
+            Factory Direct
+          </span>
         </div>
-        <div className="text-4xl sm:text-6xl select-none relative z-10 shrink-0 ml-2" aria-hidden="true">
-          🎆
-        </div>
-        {/* Subtle decorative glow & burst */}
-        <div className="pointer-events-none absolute -right-6 -bottom-6 w-36 h-36 bg-white/10 rounded-full blur-xl" />
-        <div className="pointer-events-none absolute left-1/3 -top-10 w-32 h-32 bg-amber-300/15 rounded-full blur-lg" />
-      </div>
 
-      {/* Full-width Search Bar matching Screen 2 */}
-      <div className="mb-4 sm:mb-6 relative">
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => updateFilters(selectedCategory, e.target.value, sortOption)}
-          placeholder="Search crackers by name or type..."
-          className="w-full bg-white border border-slate-300 rounded-xl sm:rounded-2xl pl-10 sm:pl-11 pr-10 py-2.5 sm:py-3 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 shadow-xs font-medium"
-        />
-        <svg
-          className="w-4 h-4 sm:w-5 sm:h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-        </svg>
-        {searchQuery && (
-          <button
-            type="button"
-            onClick={() => updateFilters(selectedCategory, '', sortOption)}
-            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 text-xs font-bold"
+        {/* Search Bar right below header */}
+        <div className="relative">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => updateFilters(selectedCategory, e.target.value, sortOption)}
+            placeholder="Search crackers by name or type..."
+            className="w-full bg-white border border-slate-300 rounded-xl sm:rounded-2xl pl-10 sm:pl-11 pr-10 py-2 sm:py-2.5 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 shadow-xs font-medium"
+          />
+          <svg
+            className="w-4 h-4 sm:w-5 sm:h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
           >
-            ✕
-          </button>
-        )}
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => updateFilters(selectedCategory, '', sortOption)}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 text-xs font-bold"
+            >
+              ✕
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Main Responsive Split Layout: Category Sidebar on Left, Products on Right matching Image 3 */}
-      <div className="grid grid-cols-[5.5rem_1fr] sm:grid-cols-[8.5rem_1fr] lg:grid-cols-[15.5rem_1fr] gap-2.5 sm:gap-4 lg:gap-8 items-start">
-        {/* Category Sidebar matching Image 3 (Category sidebar + product list) */}
-        <aside className="sticky top-20 sm:top-24 self-start bg-white p-1.5 sm:p-3 lg:p-4 rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-xs">
-          <div className="flex items-center justify-between mb-2 sm:mb-3 px-1">
-            <h2 className="text-[10px] sm:text-xs font-black uppercase tracking-wider sm:tracking-widest text-slate-500">
+      {/* Main Responsive Split Layout: Category Sidebar on Left, Products on Right matching WhatsApp Mockup */}
+      <div className="grid grid-cols-[7.75rem_1fr] sm:grid-cols-[10rem_1fr] lg:grid-cols-[14rem_1fr] gap-2 sm:gap-4 lg:gap-8 items-start">
+        {/* Category Sidebar matching WhatsApp Mockup (Category sidebar + product list) */}
+        <aside className="sticky top-20 sm:top-24 self-start bg-white p-1 sm:p-2.5 lg:p-4 rounded-xl sm:rounded-2xl border border-slate-200 shadow-xs">
+          <div className="flex items-center justify-between mb-1.5 sm:mb-3 px-1">
+            <h2 className="text-[10px] sm:text-xs font-black uppercase tracking-wider text-slate-500">
               CATEGORIES
             </h2>
             <span className="text-[9px] sm:text-[11px] font-bold text-slate-400 hidden sm:inline">
@@ -174,22 +174,22 @@ export const ExploreCrackersView: React.FC<ExploreCrackersViewProps> = ({
             </span>
           </div>
 
-          <nav className="space-y-1 max-h-[calc(100vh-10rem)] overflow-y-auto no-scrollbar pr-0.5">
+          <nav className="space-y-0.5 sm:space-y-1 max-h-[calc(100vh-10rem)] overflow-y-auto no-scrollbar pr-0.5">
             <button
               type="button"
               data-testid="category-link"
               onClick={() => handleSelectCategory('')}
-              className={`w-full flex flex-col sm:flex-row items-center sm:justify-between p-1.5 sm:px-3 sm:py-2 rounded-xl text-[10px] sm:text-xs font-bold transition-all text-center sm:text-left ${
+              className={`w-full flex items-center justify-between px-1.5 py-1.5 sm:px-2.5 sm:py-2 rounded-lg text-[10px] sm:text-xs font-bold transition-all text-left ${
                 !selectedCategory
-                  ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs shadow-orange-500/20'
-                  : 'text-slate-700 hover:bg-amber-50/80 hover:text-amber-800'
+                  ? 'bg-orange-500 text-white shadow-xs'
+                  : 'text-slate-700 hover:bg-slate-50'
               }`}
             >
-              <span className="flex items-center gap-1 sm:gap-2">
-                <span className="text-xs sm:text-sm">⭐</span>
-                <span className="truncate">All</span>
+              <span className="flex items-center gap-1 min-w-0 pr-0.5">
+                <span className="text-xs shrink-0">★</span>
+                <span className="leading-tight whitespace-nowrap text-[10px] sm:text-xs">All Crackers</span>
               </span>
-              <span className={`text-[9px] sm:text-[10px] px-1 sm:px-1.5 py-0.2 rounded-full mt-0.5 sm:mt-0 ${!selectedCategory ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-500'}`}>
+              <span className={`text-[8px] sm:text-[10px] px-1 py-0.2 rounded-full shrink-0 font-medium ${!selectedCategory ? 'bg-white/20 text-white' : 'text-slate-400'}`}>
                 {initialProducts.length}
               </span>
             </button>
@@ -205,18 +205,20 @@ export const ExploreCrackersView: React.FC<ExploreCrackersViewProps> = ({
                   type="button"
                   data-testid="category-link"
                   onClick={() => handleSelectCategory(cat.slug)}
-                  className={`w-full flex flex-col sm:flex-row items-center sm:justify-between p-1.5 sm:px-3 sm:py-2 rounded-xl text-[10px] sm:text-xs font-bold transition-all text-center sm:text-left ${
+                  className={`w-full flex items-center justify-between px-1.5 py-1.5 sm:px-2.5 sm:py-2 rounded-lg text-[10px] sm:text-xs transition-all text-left ${
                     isSelected
-                      ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs shadow-orange-500/20'
-                      : 'text-slate-700 hover:bg-amber-50/80 hover:text-amber-800'
+                      ? 'bg-orange-500 text-white font-bold shadow-xs'
+                      : 'text-slate-700 hover:bg-slate-50 font-medium'
                   }`}
                 >
-                  <span className="flex items-center gap-1 sm:gap-2 truncate max-w-full">
-                    <span className="text-xs sm:text-sm shrink-0">{icon}</span>
-                    <span className="truncate text-[10px] sm:text-xs">{cat.name}</span>
+                  <span className="flex items-center gap-1 min-w-0 pr-0.5">
+                    <span className="text-xs shrink-0">{icon}</span>
+                    <span className="leading-tight line-clamp-2 break-words text-[10px] sm:text-xs">
+                      {cat.name}
+                    </span>
                   </span>
                   {count > 0 && (
-                    <span className={`text-[8px] sm:text-[10px] px-1 sm:px-1.5 py-0.2 rounded-full shrink-0 mt-0.5 sm:mt-0 ${isSelected ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-500'}`}>
+                    <span className={`text-[8px] sm:text-[10px] shrink-0 font-medium ml-0.5 ${isSelected ? 'text-white/90' : 'text-slate-400'}`}>
                       {count}
                     </span>
                   )}
@@ -228,32 +230,29 @@ export const ExploreCrackersView: React.FC<ExploreCrackersViewProps> = ({
 
         {/* Products Column */}
         <section className="min-w-0">
-          {/* Header Row: All Crackers (X items) on Left, Sort: Featured on Right matching Screen 2 */}
-          <div className="flex items-center justify-between gap-2 pb-2.5 sm:pb-3 border-b border-slate-200 mb-2 sm:mb-3">
-            <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
-              <h2 className="text-xs sm:text-base font-black text-slate-900 tracking-tight truncate">
+          {/* Header Row: All Crackers (X items) on Left, Sort: Featured on Right matching WhatsApp Mockup */}
+          <div className="flex items-center justify-between gap-1 pb-1.5 sm:pb-3 border-b border-slate-200 mb-2 sm:mb-3">
+            <div className="flex items-baseline gap-1 min-w-0">
+              <h2 className="text-[11px] sm:text-base font-black text-slate-900 tracking-tight whitespace-nowrap">
                 {activeCategoryObject ? activeCategoryObject.name : 'All Crackers'}
               </h2>
-              <span className="text-[10px] sm:text-xs text-slate-400 font-medium shrink-0">
-                ({filteredProducts.length})
+              <span className="text-[9px] sm:text-xs text-slate-400 font-medium whitespace-nowrap">
+                ({filteredProducts.length} items)
               </span>
             </div>
 
-            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-              {/* Sort Selector */}
-              <div className="flex items-center gap-1">
-                <span className="text-xs font-bold text-slate-500 hidden sm:inline">Sort:</span>
-                <select
-                  value={sortOption}
-                  onChange={(e) => updateFilters(selectedCategory, searchQuery, e.target.value)}
-                  className="bg-white border border-slate-300 rounded-lg px-2 py-1 text-[11px] sm:text-xs text-slate-800 font-bold focus:outline-none focus:border-orange-500 shadow-2xs shrink-0"
-                >
-                  <option value="">Featured</option>
-                  <option value="price_asc">Price: Low to High</option>
-                  <option value="price_desc">Price: High to Low</option>
-                  <option value="name_asc">Name: A to Z</option>
-                </select>
-              </div>
+            <div className="flex items-center shrink-0">
+              {/* Sort Selector matching WhatsApp Mockup */}
+              <select
+                value={sortOption}
+                onChange={(e) => updateFilters(selectedCategory, searchQuery, e.target.value)}
+                className="bg-white border border-slate-200 rounded-lg px-1.5 py-0.5 sm:py-1 text-[9px] sm:text-xs text-slate-700 font-bold focus:outline-none focus:border-orange-500 shadow-2xs"
+              >
+                <option value="">Sort: Featured</option>
+                <option value="price_asc">Price: Low to High</option>
+                <option value="price_desc">Price: High to Low</option>
+                <option value="name_asc">Name: A to Z</option>
+              </select>
             </div>
           </div>
 

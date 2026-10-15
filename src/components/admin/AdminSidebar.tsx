@@ -29,15 +29,15 @@ export const AdminSidebar: React.FC = () => {
   ];
 
   return (
-    <aside className="flex w-full shrink-0 flex-col border-b border-slate-800 bg-slate-950 text-slate-300 md:min-h-screen md:w-64 md:border-b-0 md:border-r">
+    <aside className="flex w-full shrink-0 flex-col border-b border-slate-200 bg-white text-slate-700 md:min-h-screen md:w-64 md:border-b-0 md:border-r border-slate-200 shadow-xs">
       {/* Brand Header */}
-      <div className="flex items-center gap-3 border-b border-slate-800 p-4 sm:p-6">
-        <div className="w-9 h-9 rounded-xl bg-amber-500 text-slate-950 font-black flex items-center justify-center text-lg shadow-md">
+      <div className="flex items-center gap-3 border-b border-slate-100 p-4 sm:p-6 bg-slate-50/60">
+        <div className="w-9 h-9 rounded-xl bg-slate-900 text-amber-400 font-black flex items-center justify-center text-lg shadow-md border border-slate-800">
           👑
         </div>
         <div>
-          <h2 className="text-sm font-extrabold text-amber-400">ADMIN CONSOLE</h2>
-          <p className="text-[10px] text-slate-500 uppercase tracking-widest font-mono">Sivakasi Crackers</p>
+          <h2 className="text-sm font-extrabold text-slate-900 tracking-wide">ADMIN CONSOLE</h2>
+          <p className="text-[10px] text-slate-400 uppercase tracking-widest font-mono">Sivakasi Crackers</p>
         </div>
       </div>
 
@@ -51,8 +51,8 @@ export const AdminSidebar: React.FC = () => {
               href={item.href}
               className={`flex shrink-0 items-center gap-3 rounded-xl px-4 py-3 transition-all ${
                 isActive
-                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30 font-bold shadow-md'
-                  : 'hover:bg-slate-900 text-slate-400 hover:text-white'
+                  ? 'bg-slate-900 text-white font-bold shadow-md shadow-slate-900/15'
+                  : 'hover:bg-slate-100 text-slate-600 hover:text-slate-900'
               }`}
             >
               <span className="text-base">{item.icon}</span>
@@ -63,18 +63,18 @@ export const AdminSidebar: React.FC = () => {
       </nav>
 
       {/* Footer / Storefront link / Logout */}
-      <div className="grid grid-cols-2 gap-2 border-t border-slate-900 p-3 md:block md:space-y-2 md:p-4">
+      <div className="grid grid-cols-2 gap-2 border-t border-slate-100 p-3 md:block md:space-y-2 md:p-4 bg-slate-50/40">
         <Link
           href="/"
           target="_blank"
-          className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 text-xs font-semibold transition-colors border border-slate-800"
+          className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold transition-colors border border-slate-200"
         >
-          <span>🌐</span> View Customer Storefront
+          <span>🌐</span> View Storefront
         </Link>
 
         <button
           onClick={handleLogout}
-          className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-300 border border-rose-500/20 text-xs font-semibold transition-colors"
+          className="flex items-center justify-center gap-2 w-full py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-semibold transition-colors"
         >
           <span>🚪</span> Logout
         </button>

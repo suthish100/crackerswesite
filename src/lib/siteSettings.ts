@@ -30,6 +30,14 @@ export function getSiteSettings(): SiteSettings {
             ? parsed.hero.slides
             : DEFAULT_SITE_SETTINGS.hero.slides,
         },
+        bestSellers: {
+          ...DEFAULT_SITE_SETTINGS.bestSellers,
+          ...(parsed.bestSellers || {}),
+        },
+        promoBanner: {
+          ...DEFAULT_SITE_SETTINGS.promoBanner,
+          ...(parsed.promoBanner || {}),
+        },
       };
     }
   } catch (error) {
@@ -59,6 +67,18 @@ export function saveSiteSettings(settings: Partial<SiteSettings>): SiteSettings 
     hero: {
       ...current.hero,
       ...(settings.hero || {}),
+    },
+    bestSellers: {
+      ...(current.bestSellers || DEFAULT_SITE_SETTINGS.bestSellers),
+      ...(settings.bestSellers || {}),
+      productIds: settings.bestSellers?.productIds ?? current.bestSellers?.productIds ?? DEFAULT_SITE_SETTINGS.bestSellers.productIds,
+    },
+    promoBanner: {
+      ...(current.promoBanner || DEFAULT_SITE_SETTINGS.promoBanner),
+      ...(settings.promoBanner || {}),
+      enabled: settings.promoBanner?.enabled ?? current.promoBanner?.enabled ?? DEFAULT_SITE_SETTINGS.promoBanner.enabled,
+      title: settings.promoBanner?.title ?? current.promoBanner?.title ?? DEFAULT_SITE_SETTINGS.promoBanner.title,
+      subtitle: settings.promoBanner?.subtitle ?? current.promoBanner?.subtitle ?? DEFAULT_SITE_SETTINGS.promoBanner.subtitle,
     },
   };
 

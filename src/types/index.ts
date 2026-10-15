@@ -126,6 +126,30 @@ export interface HeroSlide {
   sortOrder: number;
 }
 
+export interface PromoBannerConfig {
+  enabled: boolean;
+  title: string;
+  subtitle: string;
+  mediaType?: 'video' | 'image';
+  mediaUrl?: string;
+  posterUrl?: string;
+  videoUrl?: string;
+  bannerImageUrl?: string;
+  badge?: string;
+  badgeText?: string;
+  linkText?: string;
+  buttonText?: string;
+  destinationUrl?: string;
+  buttonLink?: string;
+}
+
+export interface BestSellersConfig {
+  enabled?: boolean;
+  productIds: number[];
+  title?: string;
+  subtitle?: string;
+}
+
 export interface SiteSettings {
   ticker: PromotionalTickerConfig;
   header: HeaderConfig;
@@ -133,5 +157,7 @@ export interface SiteSettings {
     slides: HeroSlide[];
     autoplaySpeed: number;
   };
+  bestSellers: BestSellersConfig;
+  promoBanner: PromoBannerConfig;
 }
 
