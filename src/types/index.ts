@@ -88,3 +88,50 @@ export interface Order {
   items?: OrderItem[];
   statusHistory?: OrderStatusHistory[];
 }
+
+export interface TickerItem {
+  id: string;
+  tag: string;
+  text: string;
+  linkText: string;
+  destinationUrl: string;
+  isClickable: boolean;
+}
+
+export interface PromotionalTickerConfig {
+  enabled: boolean;
+  text: string;
+  tag: string;
+  icon: string;
+  linkText: string;
+  destinationUrl: string;
+  isClickable: boolean;
+  items: TickerItem[];
+}
+
+export interface HeaderConfig {
+  brandTitle: string;
+  brandSubtitle: string;
+  announcementText?: string;
+}
+
+export interface HeroSlide {
+  id: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  imageUrl: string;
+  destinationUrl?: string;
+  isActive: boolean;
+  sortOrder: number;
+}
+
+export interface SiteSettings {
+  ticker: PromotionalTickerConfig;
+  header: HeaderConfig;
+  hero: {
+    slides: HeroSlide[];
+    autoplaySpeed: number;
+  };
+}
+

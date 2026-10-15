@@ -16,13 +16,15 @@ You have two easy ways:
 1. **Explore Crackers**: Browse our visual 2-column mobile / 4-column desktop store, filter by category, and add items to your basket.
 2. **Quick Order List ⚡**: Use our wholesale price list table to type quantities (`5`, `10`, etc.) and view live line amounts and grand totals.
 
-### Q5: What is the minimum order requirement?
-The minimum booking threshold for regional road transport is:
+### Q5: What is the delivery policy and are there delivery charges?
+Delivery is available across Tamil Nadu. There is NO free delivery. Delivery charges apply and will be included in your order total or shown separately before order confirmation. Your shipment will be sent to the courier centre nearest to your address, or to another courier centre of your choice, subject to availability and confirmation. For delivery details and assistance, please contact us by phone or message.
+
+Minimum factory road transport manifest booking thresholds:
 - **₹3,000** for delivery in Tamil Nadu & Pondicherry.
 - **₹5,000** for delivery to all other Indian states.
 
 ### Q6: Can I get crackers delivered directly to my home doorstep?
-Most orders arrive at your local road transport office (Godown Pickup). When the parcel reaches your city depot, the transport office calls you. You can either pick it up directly or request them to dispatch it via a local auto/van for a small local transport charge.
+Under hazardous cargo safety regulations, commercial fireworks are dispatched via licensed road transport carriers to the courier/transport centre nearest to your address. Once the consignment reaches the city depot, the transport office notifies you for collection, or local door delivery can be coordinated directly with the depot for an additional local conveyance fee.
 
 ### Q7: When should I order before Diwali to avoid rush?
 We strongly advise ordering 2 to 3 weeks prior to Diwali. During the final 10 days before Diwali, road transport hubs experience severe festival traffic and freight backlogs.

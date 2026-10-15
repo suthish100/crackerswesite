@@ -143,13 +143,18 @@ export const CartDrawer: React.FC = () => {
             {items.length > 0 && (
               <div className="p-4 sm:p-6 bg-slate-50 border-t border-slate-200 space-y-3.5 sm:space-y-4">
                 <div className="flex justify-between items-center text-slate-700 text-sm">
-                  <span className="font-bold text-slate-800">Total Amount</span>
+                  <span className="font-bold text-slate-800">Items Total</span>
                   <span
                     data-testid="cart-total"
                     className="text-xl sm:text-2xl font-black text-amber-700 font-mono"
                   >
                     {formatPrice(totalAmount)}
                   </span>
+                </div>
+
+                <div className="text-[11px] text-slate-500 bg-amber-50/80 border border-amber-200/80 rounded-xl p-2.5">
+                  <span className="font-bold text-amber-900 block">🚚 Delivery Notice:</span>
+                  Delivery available across Tamil Nadu to your nearest courier centre. Delivery charges apply and will be confirmed on order verification.
                 </div>
 
                 <div className="flex gap-2.5 sm:gap-3">

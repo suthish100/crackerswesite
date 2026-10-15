@@ -3,106 +3,110 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import Link from 'next/link';
-
-const OFFERS = [
-  {
-    icon: '💥',
-    tag: 'DIWALI SPECIAL',
-    text: 'Flat 75% Factory Direct Discount on all Ready Combos & Crackers!',
-    linkText: 'Shop Deals',
-    href: '/packages',
-  },
-  {
-    icon: '🚚',
-    tag: 'FREE TRANSPORT',
-    text: 'Free Regional Hub Dispatch on all celebration orders above ₹3,000!',
-    linkText: 'Order Now',
-    href: '/products',
-  },
-  {
-    icon: '🎁',
-    tag: 'BONUS GIFT',
-    text: 'Complimentary box of 10 Electric Sparklers with every Family Combo!',
-    linkText: 'Claim Gift',
-    href: '/packages',
-  },
-  {
-    icon: '⚡',
-    tag: 'FAST DISPATCH',
-    text: 'Direct Sivakasi factory dispatch within 24 hours • 100% Certified Green Fireworks',
-    linkText: 'Explore',
-    href: '/products',
-  },
-];
+import { SiteSettings } from '@/types';
+import { DEFAULT_SITE_SETTINGS } from '@/lib/siteSettingsDefaults';
 
 export const OfferBanner: React.FC = () => {
+  const [settings, setSettings] = useState<SiteSettings>(DEFAULT_SITE_SETTINGS);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
-    if (isPaused) return;
+    // Fetch live settings if available
+    fetch('/api/site-settings')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.settings) {
+          setSettings(data.settings);
+        }
+      })
+      .catch(() => {
+        // Fall back gracefully to DEFAULT_SITE_SETTINGS
+      });
+  }, []);
+
+  const ticker = settings.ticker;
+
+  // Build items array
+  const items = (ticker.items && ticker.items.length > 0)
+    ? ticker.items
+    : [
+        {
+          id: 'default-1',
+          tag: ticker.tag || 'SPECIAL OFFER',
+          text: ticker.text || 'UP TO 70% DISCOUNT ON ELIGIBLE CRACKERS',
+          linkText: ticker.linkText || 'Shop Deals',
+          destinationUrl: ticker.destinationUrl || '/products',
+          isClickable: ticker.isClickable,
+        },
+      ];
+
+  useEffect(() => {
+    if (isPaused || items.length <= 1) return;
     const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % OFFERS.length);
+      setCurrentIndex((prev) => (prev + 1) % items.length);
     }, 4500);
     return () => clearInterval(interval);
-  }, [isPaused]);
+  }, [isPaused, items.length]);
 
-  const currentOffer = OFFERS[currentIndex];
+  if (!ticker.enabled || items.length === 0) return null;
+
+  const currentItem = items[currentIndex] || items[0];
+  const isClickable = Boolean(currentItem.isClickable && currentItem.destinationUrl?.trim());
 
   return (
     <div
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
-      className="relative z-50 bg-gradient-to-r from-amber-600 via-amber-500 to-orange-600 text-white text-xs font-semibold shadow-sm overflow-hidden"
+      className="relative z-50 bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 text-white text-xs font-bold shadow-xs select-none"
     >
-      <div className="mx-auto flex h-10 max-w-7xl items-center justify-between px-3 sm:px-6 lg:px-8">
-        {/* Left Arrow */}
-        <button
-          type="button"
-          onClick={() => setCurrentIndex((prev) => (prev - 1 + OFFERS.length) % OFFERS.length)}
-          className="p-1 rounded-md hover:bg-black/10 transition-colors hidden sm:block text-amber-100"
-          aria-label="Previous Offer"
-        >
-          ‹
-        </button>
+      <div className="mx-auto flex h-9 sm:h-10 max-w-7xl items-center justify-between px-3 sm:px-6 lg:px-8">
+        {/* Left Gift Icon */}
+        <div className="flex items-center gap-1.5 shrink-0 text-base">
+          <span>🎁</span>
+        </div>
 
-        {/* Sliding Offer Message */}
+        {/* Center Promotional Message */}
         <div className="flex-1 overflow-hidden text-center mx-2">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentIndex}
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -12 }}
-              transition={{ duration: 0.3, ease: 'easeOut' }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
               className="inline-flex items-center justify-center gap-2 truncate max-w-full"
             >
-              <span className="text-sm shrink-0">{currentOffer.icon}</span>
-              <span className="rounded-full bg-white/20 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-white shrink-0">
-                {currentOffer.tag}
-              </span>
-              <span className="truncate text-amber-50 text-[11px] sm:text-xs">
-                {currentOffer.text}
-              </span>
-              <Link
-                href={currentOffer.href}
-                className="hidden sm:inline-block underline decoration-amber-200 underline-offset-2 hover:text-amber-200 transition-colors font-bold shrink-0 ml-1"
-              >
-                {currentOffer.linkText} →
-              </Link>
+              {isClickable ? (
+                <Link
+                  href={currentItem.destinationUrl}
+                  className="inline-flex items-center gap-2 text-white hover:text-amber-100 transition-colors uppercase tracking-wider text-[11px] sm:text-xs font-black truncate"
+                >
+                  <span className="truncate">{currentItem.text}</span>
+                </Link>
+              ) : (
+                <span className="text-white uppercase tracking-wider text-[11px] sm:text-xs font-black truncate">
+                  {currentItem.text}
+                </span>
+              )}
             </motion.div>
           </AnimatePresence>
         </div>
 
-        {/* Right Arrow */}
-        <button
-          type="button"
-          onClick={() => setCurrentIndex((prev) => (prev + 1) % OFFERS.length)}
-          className="p-1 rounded-md hover:bg-black/10 transition-colors hidden sm:block text-amber-100"
-          aria-label="Next Offer"
-        >
-          ›
-        </button>
+        {/* Right Arrow / Action */}
+        <div className="flex items-center gap-1 shrink-0">
+          {isClickable ? (
+            <Link
+              href={currentItem.destinationUrl}
+              className="p-1 rounded hover:bg-black/10 transition-colors text-white font-bold text-sm sm:text-base flex items-center"
+              aria-label="View offer details"
+            >
+              →
+            </Link>
+          ) : (
+            <span className="text-white/80 text-sm">→</span>
+          )}
+        </div>
       </div>
     </div>
   );

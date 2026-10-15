@@ -25,6 +25,7 @@ export const AdminSidebar: React.FC = () => {
     { label: 'Products', href: '/admin/products', icon: '🧨' },
     { label: 'Categories', href: '/admin/categories', icon: '🏷️' },
     { label: 'Packages', href: '/admin/packages', icon: '🎁' },
+    { label: 'Banners & Ticker', href: '/admin/site-settings', icon: '📢' },
   ];
 
   return (

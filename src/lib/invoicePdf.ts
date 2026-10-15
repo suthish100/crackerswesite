@@ -356,8 +356,7 @@ export interface ShareResult {
 }
 
 export async function shareOrderInvoicePdf(
-  order: OrderInvoiceData,
-  options?: { origin?: string }
+  order: OrderInvoiceData
 ): Promise<ShareResult> {
   const doc = generateOrderInvoicePdf(order);
   const filename = `Invoice_${order.publicOrderId}.pdf`;

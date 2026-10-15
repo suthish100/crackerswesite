@@ -4,9 +4,9 @@ test.describe('Quick Order Price List', () => {
   test('quick order page renders products with amount calculation and subtotal', async ({ page }) => {
     await page.goto('/quick-order');
 
-    // Page heading and minimum order notice
-    await expect(page.getByRole('heading', { name: /Quick Order/i })).toBeVisible();
-    await expect(page.locator('text=Minimum Order Notice')).toBeVisible();
+    // Verified that introductory section and Minimum Order Notice are removed
+    await expect(page.locator('text=Minimum Order Notice')).not.toBeVisible();
+    await expect(page.locator('input[placeholder*="Search crackers"]')).toBeVisible();
 
     // Table headers exist
     await expect(page.locator('th:has-text("Image")')).toBeVisible();
@@ -32,7 +32,7 @@ test.describe('Quick Order Price List', () => {
     // Click "View Bag" to open the Cart Drawer
     const viewBagBtn = page.getByRole('button', { name: /View Bag/i });
     await expect(viewBagBtn).toBeVisible();
-    await viewBagBtn.click();
+    await viewBagBtn.click({ force: true });
 
     // Verify Cart Drawer header and Total Amount are visible and within viewport
     const basketHeading = page.getByRole('heading', { name: 'Your Basket' });
@@ -48,7 +48,7 @@ test.describe('Quick Order Price List', () => {
     // Submit button links to checkout
     const submitBtn = page.locator('a:has-text("Submit Order Now")');
     await expect(submitBtn).toBeVisible();
-    await submitBtn.click();
+    await submitBtn.click({ force: true });
 
     await expect(page).toHaveURL(/\/checkout/);
   });

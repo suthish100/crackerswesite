@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Product, Category } from '@/types';
 import { ProductCard } from '@/components/storefront/ProductCard';
+import { useCart } from '@/context/CartContext';
+import { formatPrice } from '@/lib/utils';
 
 interface ExploreCrackersViewProps {
   categories: Category[];
@@ -44,6 +46,7 @@ export const ExploreCrackersView: React.FC<ExploreCrackersViewProps> = ({
   const [sortOption, setSortOption] = useState<string>(initialSort);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
   const [categorySearchQuery, setCategorySearchQuery] = useState('');
+  const { totalItemCount, totalAmount, setIsOpen } = useCart();
 
   // Product counts per category
   const categoryCounts = useMemo(() => {
@@ -111,53 +114,82 @@ export const ExploreCrackersView: React.FC<ExploreCrackersViewProps> = ({
   }, [categories, categorySearchQuery]);
 
   return (
-    <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
-      {/* Quick Order Banner */}
-      <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row items-center justify-between gap-3 p-3 sm:p-4 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 text-white shadow-sm">
-        <div className="flex items-center gap-2.5 text-center sm:text-left">
-          <span className="text-xl sm:text-2xl animate-bounce">⚡</span>
-          <div>
-            <div className="font-black text-xs sm:text-sm uppercase tracking-wide">Prefer Wholesale Price List?</div>
-            <div className="text-[11px] sm:text-xs text-amber-100 font-medium">Type box quantities directly, view live line subtotals, and check out instantly.</div>
-          </div>
+    <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8 py-4 sm:py-6 pb-24 sm:pb-28">
+      {/* Top Banner: Orange festive banner matching Screen 2 in uploaded design */}
+      <div className="mb-4 sm:mb-5 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-orange-500 via-orange-600 to-amber-500 text-white p-4 sm:p-6 shadow-md relative overflow-hidden flex items-center justify-between">
+        <div className="relative z-10">
+          <h1 className="text-xl sm:text-3xl lg:text-4xl font-black uppercase tracking-tight text-white drop-shadow-xs">
+            EXPLORE CRACKERS
+          </h1>
+          <p className="mt-1 text-xs sm:text-sm font-medium text-amber-100 max-w-md">
+            Browse all products by category and add to cart easily.
+          </p>
         </div>
-        <Link
-          href="/quick-order"
-          className="w-full sm:w-auto px-4 py-2 rounded-xl bg-slate-950 hover:bg-slate-900 text-amber-300 font-black text-xs text-center shadow-sm transition-all hover:scale-105 active:scale-95 shrink-0"
-        >
-          Open Quick Order List →
-        </Link>
+        <div className="text-4xl sm:text-6xl select-none relative z-10 shrink-0 ml-2" aria-hidden="true">
+          🎆
+        </div>
+        {/* Subtle decorative glow & burst */}
+        <div className="pointer-events-none absolute -right-6 -bottom-6 w-36 h-36 bg-white/10 rounded-full blur-xl" />
+        <div className="pointer-events-none absolute left-1/3 -top-10 w-32 h-32 bg-amber-300/15 rounded-full blur-lg" />
       </div>
 
-      {/* Main Responsive Layout: Side by side on Desktop (lg:), Full width on Mobile */}
-      <div className="lg:grid lg:grid-cols-[15.5rem_1fr] lg:gap-8 items-start">
-        {/* Desktop Category Sidebar (Hidden on Mobile/Tablet) */}
-        <aside className="hidden lg:block sticky top-24 self-start bg-white p-4 rounded-3xl border border-slate-200/90 shadow-xs">
-          <div className="flex items-center justify-between mb-3 px-1">
-            <h2 className="text-xs font-black uppercase tracking-widest text-amber-800">
-              Categories
+      {/* Full-width Search Bar matching Screen 2 */}
+      <div className="mb-4 sm:mb-6 relative">
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => updateFilters(selectedCategory, e.target.value, sortOption)}
+          placeholder="Search crackers by name or type..."
+          className="w-full bg-white border border-slate-300 rounded-xl sm:rounded-2xl pl-10 sm:pl-11 pr-10 py-2.5 sm:py-3 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20 shadow-xs font-medium"
+        />
+        <svg
+          className="w-4 h-4 sm:w-5 sm:h-5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+        </svg>
+        {searchQuery && (
+          <button
+            type="button"
+            onClick={() => updateFilters(selectedCategory, '', sortOption)}
+            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700 text-xs font-bold"
+          >
+            ✕
+          </button>
+        )}
+      </div>
+
+      {/* Main Responsive Split Layout: Category Sidebar on Left, Products on Right matching Image 3 */}
+      <div className="grid grid-cols-[5.5rem_1fr] sm:grid-cols-[8.5rem_1fr] lg:grid-cols-[15.5rem_1fr] gap-2.5 sm:gap-4 lg:gap-8 items-start">
+        {/* Category Sidebar matching Image 3 (Category sidebar + product list) */}
+        <aside className="sticky top-20 sm:top-24 self-start bg-white p-1.5 sm:p-3 lg:p-4 rounded-2xl sm:rounded-3xl border border-slate-200/90 shadow-xs">
+          <div className="flex items-center justify-between mb-2 sm:mb-3 px-1">
+            <h2 className="text-[10px] sm:text-xs font-black uppercase tracking-wider sm:tracking-widest text-slate-500">
+              CATEGORIES
             </h2>
-            <span className="text-[11px] font-bold text-slate-400">
+            <span className="text-[9px] sm:text-[11px] font-bold text-slate-400 hidden sm:inline">
               {categories.length} Types
             </span>
           </div>
 
-          <nav className="space-y-1 max-h-[calc(100vh-12rem)] overflow-y-auto pr-1">
+          <nav className="space-y-1 max-h-[calc(100vh-10rem)] overflow-y-auto no-scrollbar pr-0.5">
             <button
               type="button"
               data-testid="category-link"
               onClick={() => handleSelectCategory('')}
-              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all text-left ${
+              className={`w-full flex flex-col sm:flex-row items-center sm:justify-between p-1.5 sm:px-3 sm:py-2 rounded-xl text-[10px] sm:text-xs font-bold transition-all text-center sm:text-left ${
                 !selectedCategory
-                  ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20'
+                  ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs shadow-orange-500/20'
                   : 'text-slate-700 hover:bg-amber-50/80 hover:text-amber-800'
               }`}
             >
-              <span className="flex items-center gap-2">
-                <span>✦</span>
-                <span>All Crackers</span>
+              <span className="flex items-center gap-1 sm:gap-2">
+                <span className="text-xs sm:text-sm">⭐</span>
+                <span className="truncate">All</span>
               </span>
-              <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${!selectedCategory ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-500'}`}>
+              <span className={`text-[9px] sm:text-[10px] px-1 sm:px-1.5 py-0.2 rounded-full mt-0.5 sm:mt-0 ${!selectedCategory ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-500'}`}>
                 {initialProducts.length}
               </span>
             </button>
@@ -173,18 +205,18 @@ export const ExploreCrackersView: React.FC<ExploreCrackersViewProps> = ({
                   type="button"
                   data-testid="category-link"
                   onClick={() => handleSelectCategory(cat.slug)}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all text-left ${
+                  className={`w-full flex flex-col sm:flex-row items-center sm:justify-between p-1.5 sm:px-3 sm:py-2 rounded-xl text-[10px] sm:text-xs font-bold transition-all text-center sm:text-left ${
                     isSelected
-                      ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/20'
+                      ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-xs shadow-orange-500/20'
                       : 'text-slate-700 hover:bg-amber-50/80 hover:text-amber-800'
                   }`}
                 >
-                  <span className="flex items-center gap-2 truncate">
-                    <span>{icon}</span>
-                    <span className="truncate">{cat.name}</span>
+                  <span className="flex items-center gap-1 sm:gap-2 truncate max-w-full">
+                    <span className="text-xs sm:text-sm shrink-0">{icon}</span>
+                    <span className="truncate text-[10px] sm:text-xs">{cat.name}</span>
                   </span>
                   {count > 0 && (
-                    <span className={`text-[10px] px-1.5 py-0.5 rounded-full shrink-0 ${isSelected ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-500'}`}>
+                    <span className={`text-[8px] sm:text-[10px] px-1 sm:px-1.5 py-0.2 rounded-full shrink-0 mt-0.5 sm:mt-0 ${isSelected ? 'bg-white/25 text-white' : 'bg-slate-100 text-slate-500'}`}>
                       {count}
                     </span>
                   )}
@@ -196,115 +228,32 @@ export const ExploreCrackersView: React.FC<ExploreCrackersViewProps> = ({
 
         {/* Products Column */}
         <section className="min-w-0">
-          {/* Header & Search/Sort Toolbar */}
-          <div className="flex flex-col gap-3 pb-3 border-b border-slate-200">
-            <div className="flex items-center justify-between gap-2">
-              <div>
-                <h1 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-                  {activeCategoryObject ? activeCategoryObject.name : 'Explore Crackers'}
-                </h1>
-                <p className="text-[11px] sm:text-xs text-slate-500 mt-0.5">
-                  Direct Sivakasi factory rates with certified quality ({filteredProducts.length} items)
-                </p>
-              </div>
-
-              {/* Mobile All Categories Button Trigger */}
-              <button
-                type="button"
-                onClick={() => setIsCategoryModalOpen(true)}
-                className="lg:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-100/90 text-amber-900 border border-amber-300 text-xs font-black shadow-xs hover:bg-amber-200 transition-colors shrink-0"
-              >
-                <span>📂</span>
-                <span>Categories</span>
-                <span className="bg-amber-500 text-slate-950 px-1.5 py-0.2 rounded-full text-[10px]">
-                  {categories.length}
-                </span>
-              </button>
+          {/* Header Row: All Crackers (X items) on Left, Sort: Featured on Right matching Screen 2 */}
+          <div className="flex items-center justify-between gap-2 pb-2.5 sm:pb-3 border-b border-slate-200 mb-2 sm:mb-3">
+            <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+              <h2 className="text-xs sm:text-base font-black text-slate-900 tracking-tight truncate">
+                {activeCategoryObject ? activeCategoryObject.name : 'All Crackers'}
+              </h2>
+              <span className="text-[10px] sm:text-xs text-slate-400 font-medium shrink-0">
+                ({filteredProducts.length})
+              </span>
             </div>
 
-            {/* Controls Row: Search + Sort */}
-            <div className="flex items-center gap-2">
-              {/* Search Bar */}
-              <div className="relative flex-1">
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => updateFilters(selectedCategory, e.target.value, sortOption)}
-                  placeholder="Search crackers by name or type..."
-                  className="w-full bg-white border border-slate-300 rounded-xl pl-8 pr-7 py-2 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500 shadow-xs"
-                />
-                <span className="absolute left-2.5 top-2.5 text-xs text-slate-400 pointer-events-none">
-                  🔍
-                </span>
-                {searchQuery && (
-                  <button
-                    type="button"
-                    onClick={() => updateFilters(selectedCategory, '', sortOption)}
-                    className="absolute right-2.5 top-2 text-xs text-slate-400 hover:text-slate-700 font-bold"
-                  >
-                    ✕
-                  </button>
-                )}
-              </div>
-
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
               {/* Sort Selector */}
-              <select
-                value={sortOption}
-                onChange={(e) => updateFilters(selectedCategory, searchQuery, e.target.value)}
-                className="bg-white border border-slate-300 rounded-xl px-2.5 py-2 text-xs text-slate-700 font-semibold focus:outline-none focus:border-amber-500 shadow-xs shrink-0"
-              >
-                <option value="">Featured</option>
-                <option value="price_asc">Price: Low to High</option>
-                <option value="price_desc">Price: High to Low</option>
-                <option value="name_asc">Name: A to Z</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Mobile Horizontal Swipeable Category Chips */}
-          <div className="lg:hidden mt-3 mb-3">
-            <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-1 px-0.5">
-              <button
-                type="button"
-                data-testid="category-link"
-                onClick={() => handleSelectCategory('')}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shrink-0 ${
-                  !selectedCategory
-                    ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/25'
-                    : 'bg-white border border-slate-200 text-slate-700 hover:border-amber-300'
-                }`}
-              >
-                <span>✦</span>
-                <span>All ({initialProducts.length})</span>
-              </button>
-
-              {categories.map((cat) => {
-                const isSelected = selectedCategory === cat.slug;
-                const count = categoryCounts.get(cat.slug) || 0;
-                const icon = getCategoryIcon(cat.slug, cat.name);
-
-                return (
-                  <button
-                    key={cat.id}
-                    type="button"
-                    data-testid="category-link"
-                    onClick={() => handleSelectCategory(cat.slug)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all shrink-0 ${
-                      isSelected
-                        ? 'bg-gradient-to-r from-amber-500 to-orange-500 text-white shadow-sm shadow-amber-500/25'
-                        : 'bg-white border border-slate-200 text-slate-700 hover:border-amber-300'
-                    }`}
-                  >
-                    <span>{icon}</span>
-                    <span>{cat.name}</span>
-                    {count > 0 && (
-                      <span className={`text-[10px] px-1 rounded-full ${isSelected ? 'bg-white/20 text-white' : 'text-slate-400'}`}>
-                        {count}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
+              <div className="flex items-center gap-1">
+                <span className="text-xs font-bold text-slate-500 hidden sm:inline">Sort:</span>
+                <select
+                  value={sortOption}
+                  onChange={(e) => updateFilters(selectedCategory, searchQuery, e.target.value)}
+                  className="bg-white border border-slate-300 rounded-lg px-2 py-1 text-[11px] sm:text-xs text-slate-800 font-bold focus:outline-none focus:border-orange-500 shadow-2xs shrink-0"
+                >
+                  <option value="">Featured</option>
+                  <option value="price_asc">Price: Low to High</option>
+                  <option value="price_desc">Price: High to Low</option>
+                  <option value="name_asc">Name: A to Z</option>
+                </select>
+              </div>
             </div>
           </div>
 
@@ -451,6 +400,35 @@ export const ExploreCrackersView: React.FC<ExploreCrackersViewProps> = ({
                 );
               })}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Floating Sticky Bottom Cart Bar matching Screen 2 in uploaded design */}
+      {totalItemCount > 0 && (
+        <div className="fixed bottom-0 inset-x-0 z-40 bg-gradient-to-r from-orange-500 via-orange-600 to-amber-500 px-4 py-2.5 sm:py-3 shadow-2xl border-t border-orange-400/50">
+          <div className="max-w-7xl mx-auto flex items-center justify-between gap-3">
+            <div className="flex items-center gap-3 text-white">
+              <div className="relative flex items-center justify-center">
+                <svg className="w-6 h-6 sm:w-7 sm:h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <span className="absolute -top-1.5 -right-2 flex h-4 min-w-4 px-1 items-center justify-center rounded-full bg-red-600 text-[10px] font-black text-white shadow-xs">
+                  {totalItemCount}
+                </span>
+              </div>
+              <div className="text-xs sm:text-sm font-black tracking-wide text-white font-mono">
+                {totalItemCount} items | {formatPrice(totalAmount)}
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setIsOpen(true)}
+              className="px-5 py-2 rounded-full bg-white text-orange-600 hover:bg-amber-50 font-black text-xs sm:text-sm shadow-md transition-all active:scale-95 flex items-center gap-1.5"
+            >
+              <span>View Cart</span>
+              <span>→</span>
+            </button>
           </div>
         </div>
       )}

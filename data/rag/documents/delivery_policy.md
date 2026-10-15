@@ -5,7 +5,9 @@ Under Indian Central Motor Vehicles Rules and Explosives Cargo Rules, fireworks 
 - Standard courier and air cargo services (e.g., Blue Dart, DTDC, India Post, Delhivery) strictly forbid transporting fireworks.
 - Therefore, all shipments are fulfilled via licensed regional commercial road transport carriers (such as VRL Logistics, ARC, TAT, Rathimeena, Royal Transport, etc.).
 
-## 2. Fulfillment Model: Nearest City Godown Pickup
+## 2. Fulfillment Model: Nearest City Godown Pickup & Delivery Charges
+- **Delivery Charges Apply**: There is NO free delivery. Delivery charges apply to orders and will be included in the order total or shown separately before order confirmation.
+- **Official Policy**: "Delivery is available across Tamil Nadu. Delivery charges apply and will be included in your order total or shown separately before order confirmation. Your shipment will be sent to the courier centre nearest to your address, or to another courier centre of your choice, subject to availability and confirmation. For delivery details and assistance, please contact us by phone or message."
 - **Godown Pickup (Primary Model)**: Consignments arrive at the licensed transport operator's parcel booking office / godown nearest to your provided address.
 - Customers collect their parcel upon presenting their Lorry Receipt (LR) tracking number and a valid government photo ID.
 - **Local Door Delivery**: In certain metro cities and towns, local door delivery via transport auto/van can be requested directly from the destination transport hub for a nominal local handling fee.

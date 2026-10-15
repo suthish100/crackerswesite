@@ -31,20 +31,7 @@ export default async function QuickOrderPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-10">
-      {/* Header Eyebrow & Title */}
-      <div className="text-center max-w-2xl mx-auto mb-6 sm:mb-8">
-        <span className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full text-xs font-black bg-amber-100 text-amber-900 border border-amber-300 uppercase tracking-widest shadow-xs">
-          <span>⚡</span> WHOLESALE PRICE LIST & QUICK ORDER
-        </span>
-        <h1 className="text-2xl sm:text-4xl font-black text-slate-900 mt-3 tracking-tight">
-          Sivakasi Direct Quick Order Sheet
-        </h1>
-        <p className="text-slate-600 text-xs sm:text-sm mt-2">
-          Type or select your required box quantities below. Subtotals and grand total calculate instantly for rapid festival checkout!
-        </p>
-      </div>
-
+    <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6">
       <QuickOrderTable categories={categories} products={products} />
     </div>
   );

@@ -81,9 +81,13 @@ export default function ShippingPolicyPage() {
 
         {/* Section 4 */}
         <section className="space-y-3">
-          <h2 className="text-lg font-bold text-amber-300">4. Freight Charges</h2>
+          <h2 className="text-lg font-bold text-amber-300">4. Delivery Charges & Courier Centre Pickup</h2>
+          <div className="bg-amber-950/40 border border-amber-500/40 p-4 rounded-2xl text-amber-100 text-sm leading-relaxed">
+            <strong className="text-white block mb-1">Standard Tamil Nadu Delivery Policy:</strong>
+            &ldquo;Delivery is available across Tamil Nadu. Delivery charges apply and will be included in your order total or shown separately before order confirmation. Your shipment will be sent to the courier centre nearest to your address, or to another courier centre of your choice, subject to availability and confirmation. For delivery details and assistance, please contact us by phone or message.&rdquo;
+          </div>
           <p className="text-sm text-slate-300 leading-relaxed">
-            Transport charges depend on the consignment weight, box volume, and destination distance. Freight can be paid directly to the transport company upon collection (To-Pay basis) or billed into your order during WhatsApp verification.
+            There is no free delivery. Delivery charges depend on consignment weight, box count, and destination distance, and will be communicated clearly before order dispatch.
           </p>
         </section>
       </div>

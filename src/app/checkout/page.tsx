@@ -231,17 +231,30 @@ export default function CheckoutPage() {
 
           <div className="pt-4 border-t border-slate-100 space-y-2.5 text-sm text-slate-700">
             <div className="flex justify-between">
-              <span>Items Total</span>
+              <span>Items Subtotal</span>
               <span className="font-semibold text-slate-900">{formatPrice(totalAmount)}</span>
             </div>
-            <div className="flex justify-between text-emerald-700 font-medium">
-              <span>Verification Status</span>
-              <span>Direct Call Confirmation</span>
+            <div className="flex justify-between items-center text-xs text-amber-800 font-semibold bg-amber-50 p-2.5 rounded-xl border border-amber-200">
+              <span className="flex items-center gap-1">
+                <span>🚚</span> Delivery Charges:
+              </span>
+              <span>Charges Apply (Confirmed on Call)</span>
+            </div>
+            <div className="text-[11px] text-slate-500 leading-relaxed bg-slate-50 p-3 rounded-xl border border-slate-200">
+              <span className="font-bold text-slate-700 block mb-1">Tamil Nadu Delivery Notice:</span>
+              Delivery is available across Tamil Nadu. Delivery charges apply and will be confirmed based on consignment weight and nearest transport depot before order confirmation. Shipments are sent to your nearest courier/transport centre. There is no free delivery.
+            </div>
+            <div className="flex justify-between text-emerald-700 font-medium text-xs">
+              <span>Payment & Dispatch</span>
+              <span>Direct Phone Verification</span>
             </div>
             <div className="flex justify-between text-lg font-black text-amber-700 pt-3 border-t border-slate-100">
-              <span>Grand Total</span>
+              <span>Items Total</span>
               <span>{formatPrice(totalAmount)}</span>
             </div>
+            <p className="text-[10px] text-slate-400 text-right italic">
+              * Final order total will include applicable transport charges.
+            </p>
           </div>
         </div>
       </div>

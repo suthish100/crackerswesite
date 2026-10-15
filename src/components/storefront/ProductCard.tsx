@@ -21,11 +21,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     setTimeout(() => setAdded(false), 1500);
   };
 
-  const isOutOfStock = false;
+  const isOutOfStock = Boolean(product.stockQty <= 0);
   const effectiveOriginalPrice =
     product.originalPrice && product.originalPrice > product.price
       ? product.originalPrice
-      : Math.round(product.price / 0.3); // 70% discount Sivakasi factory standard
+      : Math.round(product.price / 0.3);
+  const discountPercent =
+    effectiveOriginalPrice > product.price
+      ? Math.round(((effectiveOriginalPrice - product.price) / effectiveOriginalPrice) * 100)
+      : 70;
+
+  const [isWishlisted, setIsWishlisted] = useState(false);
 
   return (
     <>
@@ -36,17 +42,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       >
         {/* Product Image Container */}
         <div
-          onClick={() => {
-            if (product.imageUrl && product.imageUrl !== '/uploads/placeholder.png') {
-              setShowZoom(true);
-            }
-          }}
-          className="relative h-32 sm:h-40 md:h-44 bg-gradient-to-b from-amber-50/80 via-orange-50/40 to-white flex items-center justify-center overflow-hidden border-b border-amber-100/70 cursor-pointer"
+          className="relative h-32 sm:h-40 md:h-44 bg-gradient-to-b from-amber-50/60 via-orange-50/30 to-white flex items-center justify-center overflow-hidden border-b border-amber-100/70 p-2"
         >
           {/* Subtle radial glow */}
           <div
             aria-hidden="true"
-            className="pointer-events-none absolute inset-0 bg-radial from-amber-300/20 via-orange-200/10 to-transparent blur-lg"
+            className="pointer-events-none absolute inset-0 bg-radial from-amber-300/15 via-orange-200/10 to-transparent blur-lg"
           />
 
           {/* Real Product Image or festive illustration */}
@@ -55,7 +56,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             <img
               src={product.imageUrl}
               alt={product.name}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
             />
           ) : (
             <div className="animate-festive-float flex items-center justify-center">
@@ -65,28 +66,65 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </div>
           )}
 
+          {/* Dedicated Image Zoom Preview Button */}
+          {product.imageUrl && product.imageUrl !== '/uploads/placeholder.png' && (
+            <button
+              type="button"
+              data-testid="zoom-button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowZoom(true);
+              }}
+              aria-label={`Preview ${product.name}`}
+              className="absolute bottom-2 left-2 p-1.5 rounded-full bg-slate-900/60 hover:bg-slate-900 text-white backdrop-blur-xs transition-transform active:scale-90 z-10"
+              title="Preview Image"
+            >
+              <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7" />
+              </svg>
+            </button>
+          )}
+
           {/* Category Tag */}
           {product.category && (
-            <span className="absolute top-2 left-2 px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-white/95 text-amber-800 border border-amber-200 backdrop-blur-md shadow-xs max-w-[90px] sm:max-w-[120px] truncate">
+            <span className="absolute top-2 left-2 px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-white/95 text-amber-800 border border-amber-200 backdrop-blur-md shadow-xs max-w-[80px] sm:max-w-[110px] truncate">
               {product.category.name}
             </span>
           )}
 
+          {/* Top Right: In Stock Badge & Wishlist Heart matching Screen 2 */}
+          <div className="absolute top-2 right-2 flex items-center gap-1">
+            {isOutOfStock ? (
+              <span className="px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
+                Out of Stock
+              </span>
+            ) : (
+              <span className="px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span>In Stock</span>
+              </span>
+            )}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsWishlisted(!isWishlisted);
+              }}
+              aria-label={`Wishlist ${product.name}`}
+              className={`w-6 h-6 rounded-full flex items-center justify-center text-xs transition-transform active:scale-90 shadow-2xs ${
+                isWishlisted
+                  ? 'bg-rose-50 text-rose-600 border border-rose-200'
+                  : 'bg-white/90 hover:bg-white text-slate-400 hover:text-rose-500 border border-slate-200'
+              }`}
+            >
+              {isWishlisted ? '♥' : '♡'}
+            </button>
+          </div>
+
           {/* Discount Badge */}
           <span className="absolute bottom-2 right-2 px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-black bg-rose-600 text-white shadow-xs tracking-wide">
-            70% DISCOUNT
+            {discountPercent >= 70 ? 'UP TO 70% OFF' : `${discountPercent}% OFF`}
           </span>
-
-          {/* Stock Badge */}
-          {isOutOfStock ? (
-            <span className="absolute top-2 right-2 px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-rose-50 text-rose-700 border border-rose-200">
-              Out of Stock
-            </span>
-          ) : (
-            <span className="absolute top-2 right-2 px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
-              In Stock
-            </span>
-          )}
         </div>
 
         {/* Card Details */}

@@ -91,32 +91,8 @@ export const QuickOrderTable: React.FC<QuickOrderTableProps> = ({
     setProductQuantity(product, nextQty);
   };
 
-  const MIN_ORDER_TN = 3000;
-  const tnRemaining = Math.max(0, MIN_ORDER_TN - totalAmount);
-
   return (
-    <div className="space-y-6 pb-36 sm:pb-28">
-      {/* Minimum Order Banner (Matching reference video) */}
-      <div className="rounded-2xl border border-amber-300/80 bg-gradient-to-r from-amber-500 via-amber-600 to-orange-500 p-4 text-white shadow-md">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
-          <div>
-            <div className="flex items-center justify-center sm:justify-start gap-2 font-black text-sm uppercase tracking-wider">
-              <span>📢</span> Minimum Order Notice
-            </div>
-            <p className="text-xs sm:text-sm font-bold text-amber-50 mt-0.5">
-              Tamil Nadu & Pondicherry: <span className="underline font-black">₹3,000</span> | Other States: <span className="underline font-black">₹5,000</span>
-            </p>
-          </div>
-          <div className="text-xs font-black bg-white/20 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-white/30 text-white">
-            {tnRemaining === 0 ? (
-              <span className="text-emerald-100">✓ Minimum order requirement reached!</span>
-            ) : (
-              <span>Add {formatPrice(tnRemaining)} more for dispatch</span>
-            )}
-          </div>
-        </div>
-      </div>
-
+    <div className="space-y-4 pb-36 sm:pb-28">
       {/* Filter and Search Bar */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white p-3.5 rounded-2xl border border-slate-200/90 shadow-sm">
         {/* Search Input */}
@@ -178,7 +154,7 @@ export const QuickOrderTable: React.FC<QuickOrderTableProps> = ({
           <span>⚡</span>
           <span>Wholesale Price Sheet • Live Amount Calc</span>
         </span>
-        <span className="text-[10px] bg-amber-200 text-amber-950 px-1.5 py-0.5 rounded-md font-bold">70% DISCOUNT</span>
+        <span className="text-[10px] bg-amber-200 text-amber-950 px-1.5 py-0.5 rounded-md font-bold">UP TO 70% DISCOUNT</span>
       </div>
 
       {/* Quick Order Table */}
@@ -211,7 +187,7 @@ export const QuickOrderTable: React.FC<QuickOrderTableProps> = ({
                       <td colSpan={5} className="py-2.5 px-3 sm:px-4">
                         <div className="flex items-center justify-between">
                           <span>
-                            ✦ {category.name} <span className="text-[10px] sm:text-[11px] font-bold text-purple-200 ml-1">(70% DISCOUNT)</span>
+                            ✦ {category.name} <span className="text-[10px] sm:text-[11px] font-bold text-purple-200 ml-1">(UP TO 70% DISCOUNT)</span>
                           </span>
                           <span className="text-[10px] sm:text-[11px] font-semibold text-purple-200 normal-case">
                             {catProducts.length} items

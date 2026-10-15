@@ -39,24 +39,24 @@ function OrderConfirmationContent() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    let loadedFromStorage = false;
+    let isMounted = true;
     try {
       const saved = sessionStorage.getItem('last_order');
       if (saved) {
         const parsed: StoredOrderData = JSON.parse(saved);
-        setOrderData(parsed);
-        loadedFromStorage = true;
+        setTimeout(() => {
+          if (isMounted) setOrderData(parsed);
+        }, 0);
       }
     } catch (e) {
       console.error('Failed to parse last_order:', e);
     }
 
-    const currentId = orderId || (loadedFromStorage ? null : null);
-    if (currentId) {
-      void fetch(`/api/orders/${encodeURIComponent(currentId)}`)
+    if (orderId) {
+      void fetch(`/api/orders/${encodeURIComponent(orderId)}`)
         .then((res) => res.json())
         .then((data) => {
-          if (data.success && data.order) {
+          if (isMounted && data.success && data.order) {
             setOrderData((prev) => ({
               publicOrderId: data.order.publicOrderId,
               customerName: data.order.customerName,
@@ -72,6 +72,10 @@ function OrderConfirmationContent() {
         })
         .catch((err) => console.warn('Could not fetch full order details:', err));
     }
+
+    return () => {
+      isMounted = false;
+    };
   }, [orderId]);
 
   const displayOrderId = orderData?.publicOrderId || orderId || 'CR2026-XXXX';
